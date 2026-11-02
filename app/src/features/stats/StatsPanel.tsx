@@ -7,7 +7,9 @@ import type { Period } from '@/api/types';
 import { Button, Notice, Segmented, Text, colors, space } from '@/ui';
 
 import { count, hours, periodOptions, periodPhrase } from '../format';
-import { RankedList } from './RankedList';
+import { Shelf } from './Shelf';
+import { AlbumTile, ArtistTile } from './Tiles';
+import { TrackList } from './TrackList';
 
 export function StatsPanel({ username, isSelf }: { username: string; isSelf: boolean }) {
   const [period, setPeriod] = useState<Period>('month');
@@ -38,31 +40,24 @@ export function StatsPanel({ username, isSelf }: { username: string; isSelf: boo
             <Total value={count(data.totals.artists)} label="artists" />
             <Total value={count(data.totals.tracks)} label="songs" />
           </View>
-          <RankedList
-            title="Top artists"
-            empty="No artists yet."
-            rows={data.top_artists.map((artist) => ({ key: artist.name, title: artist.name, plays: artist.plays }))}
-          />
-          <RankedList
-            title="Top songs"
-            empty="No songs yet."
-            rows={data.top_tracks.map((track) => ({
-              key: String(track.track_id),
-              title: track.title,
-              subtitle: track.artist,
-              plays: track.plays,
-            }))}
-          />
-          <RankedList
-            title="Top albums"
-            empty="No albums yet."
-            rows={data.top_albums.map((album) => ({
-              key: `${album.artist}-${album.name}`,
-              title: album.name,
-              subtitle: album.artist,
-              plays: album.plays,
-            }))}
-          />
+          <Shelf title="Top artists">
+            {data.top_artists.map((artist) => (
+              <ArtistTile key={artist.name} name={artist.name} plays={artist.plays} />
+            ))}
+          </Shelf>
+          <TrackList title="Top songs" tracks={data.top_tracks} />
+          {data.top_albums.length > 0 ? (
+            <Shelf title="Top albums">
+              {data.top_albums.map((album) => (
+                <AlbumTile
+                  key={`${album.artist}-${album.name}`}
+                  name={album.name}
+                  artist={album.artist}
+                  plays={album.plays}
+                />
+              ))}
+            </Shelf>
+          ) : null}
         </>
       ) : null}
     </View>

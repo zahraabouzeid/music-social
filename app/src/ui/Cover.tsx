@@ -33,9 +33,11 @@ type Props = {
   seed: string;
   style?: ViewStyle;
   aspectRatio?: number;
+  round?: boolean;
+  plain?: boolean;
 };
 
-export function Cover({ seed, style, aspectRatio = 1 }: Props) {
+export function Cover({ seed, style, aspectRatio = 1, round = false, plain = false }: Props) {
   const value = hash(seed);
   const next = random(value);
   const [from, to] = GROUNDS[value % GROUNDS.length];
@@ -50,7 +52,7 @@ export function Cover({ seed, style, aspectRatio = 1 }: Props) {
   const slot = width / BAR_COUNT;
 
   return (
-    <View style={[{ aspectRatio, borderRadius: 8, overflow: 'hidden', backgroundColor: to }, style]}>
+    <View style={[{ aspectRatio, borderRadius: round ? 999 : 8, overflow: 'hidden', backgroundColor: to }, style]}>
       <Svg width="100%" height="100%" viewBox={`0 0 ${width} ${height}`} accessibilityElementsHidden>
         <Defs>
           <LinearGradient id={gradientId} x1="0" y1="0" x2="1" y2="1">
@@ -59,7 +61,7 @@ export function Cover({ seed, style, aspectRatio = 1 }: Props) {
           </LinearGradient>
         </Defs>
         <Rect x={0} y={0} width={width} height={height} fill={`url(#${gradientId})`} />
-        {heights.map((bar, index) => {
+        {(plain ? [] : heights).map((bar, index) => {
           const barHeight = bar * height * 0.8;
           return (
             <Rect
