@@ -5,6 +5,7 @@ use crate::app::AppState;
 mod accounts;
 pub mod auth;
 mod connections;
+mod discovery;
 mod health;
 mod listening;
 mod posts;
@@ -20,4 +21,5 @@ pub fn routes() -> Router<AppState> {
         .merge(stats::routes())
         .merge(profiles::routes())
         .merge(posts::routes())
+        .merge(discovery::routes())
 }
