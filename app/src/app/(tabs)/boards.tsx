@@ -1,12 +1,24 @@
 import { Link } from 'expo-router';
 import { useState } from 'react';
-import { ActivityIndicator, Pressable, StyleSheet, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 
 import { useBoard } from '@/api/hooks';
 import type { BoardEntry, Period, Scope } from '@/api/types';
 import { useSession } from '@/auth/session';
 import { count, hours, periodOptions, periodPhrase } from '@/features/format';
-import { Avatar, Notice, Screen, SearchField, Segmented, Text, colors, radius, space } from '@/ui';
+import {
+  Avatar,
+  Notice,
+  RowSkeleton,
+  Screen,
+  SearchField,
+  Segmented,
+  Skeleton,
+  Text,
+  colors,
+  radius,
+  space,
+} from '@/ui';
 
 const scopes: { value: Scope; label: string }[] = [
   { value: 'following', label: 'Friends' },
@@ -40,7 +52,13 @@ export default function Boards() {
         {artist.trim() ? ` for ${artist.trim()}` : ''}.
       </Text>
 
-      {board.isLoading ? <ActivityIndicator color={colors.accent} /> : null}
+      {board.isLoading ? (
+        <Skeleton label="Loading the leaderboard">
+          <RowSkeleton />
+          <RowSkeleton />
+          <RowSkeleton />
+        </Skeleton>
+      ) : null}
       {board.error ? <Notice tone="error" title="The leaderboard could not load" body={board.error.message} /> : null}
       {board.data?.entries.length === 0 ? (
         <Notice

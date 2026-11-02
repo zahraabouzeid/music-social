@@ -1,12 +1,12 @@
 import { Fragment, useState } from 'react';
-import { ActivityIndicator, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
 import { useSuggestions, useUserSearch } from '@/api/hooks';
 import type { Suggestion } from '@/api/types';
 import { listing, percent } from '@/features/format';
 import { FollowButton } from '@/features/people/FollowButton';
 import { UserRow } from '@/features/people/UserRow';
-import { Divider, Notice, Screen, SearchField, Text, colors, space } from '@/ui';
+import { Divider, Notice, RowSkeleton, Screen, SearchField, Skeleton, Text, colors, space } from '@/ui';
 
 export default function Discover() {
   const [query, setQuery] = useState('');
@@ -26,7 +26,12 @@ export default function Discover() {
 
       {searching ? (
         <View style={styles.section}>
-          {search.isLoading ? <ActivityIndicator color={colors.accent} /> : null}
+          {search.isLoading ? (
+            <Skeleton label="Searching">
+              <RowSkeleton />
+              <RowSkeleton />
+            </Skeleton>
+          ) : null}
           {search.data?.length === 0 ? <Text color={colors.muted}>Nobody matches “{query.trim()}”.</Text> : null}
           {search.data?.map((user, index) => (
             <Fragment key={user.id}>
@@ -43,7 +48,13 @@ export default function Discover() {
               Matched by the artists you both play.
             </Text>
           </View>
-          {suggestions.isLoading ? <ActivityIndicator color={colors.accent} /> : null}
+          {suggestions.isLoading ? (
+            <Skeleton label="Finding people">
+              <RowSkeleton />
+              <RowSkeleton />
+              <RowSkeleton />
+            </Skeleton>
+          ) : null}
           {suggestions.error ? (
             <Notice tone="error" title="Suggestions could not load" body={suggestions.error.message} />
           ) : null}

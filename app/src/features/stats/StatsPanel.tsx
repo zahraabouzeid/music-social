@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { Link } from 'expo-router';
-import { ActivityIndicator, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
 import { useStats } from '@/api/hooks';
 import type { Period } from '@/api/types';
-import { Button, Notice, Segmented, Text, colors, space } from '@/ui';
+import { Block, Button, Notice, RowSkeleton, Segmented, Skeleton, Text, colors, space } from '@/ui';
 
 import { count, hours, periodOptions, periodPhrase } from '../format';
 import { Shelf } from './Shelf';
@@ -18,7 +18,13 @@ export function StatsPanel({ username, isSelf }: { username: string; isSelf: boo
   return (
     <View style={styles.wrap}>
       <Segmented label="Time range" options={periodOptions} value={period} onChange={setPeriod} />
-      {isLoading ? <ActivityIndicator color={colors.accent} /> : null}
+      {isLoading ? (
+        <Skeleton label="Loading stats">
+          <Block style={{ width: '60%', height: 32 }} />
+          <RowSkeleton />
+          <RowSkeleton />
+        </Skeleton>
+      ) : null}
       {error ? <Notice tone="error" title="Stats could not load" body={error.message} /> : null}
       {data && data.totals.plays === 0 ? (
         <Notice

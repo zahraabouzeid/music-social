@@ -1,12 +1,12 @@
 import { Link, router } from 'expo-router';
 import { useState } from 'react';
-import { ActivityIndicator, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
 import { useFeed } from '@/api/hooks';
 import type { Post } from '@/api/types';
 import { useSession } from '@/auth/session';
 import { PostList } from '@/features/posts/PostList';
-import { Button, IconButton, Notice, Screen, Segmented, Wordmark, colors, space } from '@/ui';
+import { Button, IconButton, Notice, PostSkeleton, Screen, Segmented, Skeleton, Wordmark, space } from '@/ui';
 
 type Filter = 'all' | Post['kind'];
 
@@ -33,7 +33,12 @@ export default function Feed() {
       </View>
       <Segmented label="Show" options={filters} value={filter} onChange={setFilter} />
 
-      {feed.isLoading ? <ActivityIndicator color={colors.accent} /> : null}
+      {feed.isLoading ? (
+        <Skeleton label="Loading the feed">
+          <PostSkeleton />
+          <PostSkeleton />
+        </Skeleton>
+      ) : null}
       {feed.error ? <Notice tone="error" title="The feed could not load" body={feed.error.message} /> : null}
       {feed.data?.length === 0 ? (
         <Notice
