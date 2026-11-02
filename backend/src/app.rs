@@ -16,7 +16,12 @@ impl AppState {
             .max_connections(20)
             .connect(&config.database_url)
             .await?;
-        Ok(Self { db, config })
+        sqlx::migrate!("./migrations").run(&db).await?;
+        Ok(Self::new(db, config))
+    }
+
+    pub fn new(db: PgPool, config: Config) -> Self {
+        Self { db, config }
     }
 }
 
