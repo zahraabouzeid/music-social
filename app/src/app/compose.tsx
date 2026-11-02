@@ -78,7 +78,9 @@ export default function Compose() {
         <View style={styles.list}>
           <Text variant="heading">Share your top artists</Text>
           <Segmented label="Time range" options={periodOptions} value={period} onChange={setPeriod} />
-          <Text color={colors.muted}>Your top five artists and listening time of {periodPhrase(period)} go into the post.</Text>
+          <Text color={colors.muted}>
+            Your top five artists and listening time of {periodPhrase(period)} go into the post.
+          </Text>
         </View>
       ) : null}
 

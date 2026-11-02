@@ -40,14 +40,25 @@ export default function Connections() {
 
   return (
     <Screen insetTop={false} refreshing={connections.isRefetching} onRefresh={connections.refetch}>
-      {params.connected ? <Notice title={`${serviceNames[params.connected as Service] ?? 'Service'} is connected`} body="New plays arrive every few minutes." /> : null}
-      {params.error ? <Notice tone="error" title="The connection did not go through" body="Try again, and allow access when the service asks." /> : null}
+      {params.connected ? (
+        <Notice
+          title={`${serviceNames[params.connected as Service] ?? 'Service'} is connected`}
+          body="New plays arrive every few minutes."
+        />
+      ) : null}
+      {params.error ? (
+        <Notice
+          tone="error"
+          title="The connection did not go through"
+          body="Try again, and allow access when the service asks."
+        />
+      ) : null}
 
       <Card>
         <Text variant="heading">Import your history</Text>
         <Text color={colors.muted}>
-          Request your data from Spotify (Extended streaming history) or Apple (privacy.apple.com), then pick the JSON or
-          CSV files here. Plays you already have are skipped.
+          Request your data from Spotify (Extended streaming history) or Apple (privacy.apple.com), then pick the JSON
+          or CSV files here. Plays you already have are skipped.
         </Text>
         <Button label="Choose files" tone="ink" busy={upload.busy} onPress={startImport} />
         {upload.error ? <Text color={colors.red}>{upload.error}</Text> : null}
@@ -107,19 +118,23 @@ function ConnectedActions({ service }: { service: Service }) {
           label="Sync now"
           compact
           busy={busy}
-          onPress={() => run(async () => {
-            await request(`/connections/${service}/sync`, { method: 'POST', token });
-            invalidate();
-          })}
+          onPress={() =>
+            run(async () => {
+              await request(`/connections/${service}/sync`, { method: 'POST', token });
+              invalidate();
+            })
+          }
         />
         <Button
           label="Disconnect"
           tone="quiet"
           compact
-          onPress={() => run(async () => {
-            await request(`/connections/${service}`, { method: 'DELETE', token });
-            invalidate();
-          })}
+          onPress={() =>
+            run(async () => {
+              await request(`/connections/${service}`, { method: 'DELETE', token });
+              invalidate();
+            })
+          }
         />
       </View>
       {error ? <Text color={colors.red}>{error}</Text> : null}
@@ -150,11 +165,13 @@ function LastfmCard({ connection }: { connection?: Connection }) {
             tone="ink"
             busy={busy}
             disabled={!username.trim()}
-            onPress={() => run(async () => {
-              await request('/connections/lastfm', { method: 'POST', json: { username }, token });
-              await request('/connections/lastfm/sync', { method: 'POST', token }).catch(() => undefined);
-              invalidate();
-            })}
+            onPress={() =>
+              run(async () => {
+                await request('/connections/lastfm', { method: 'POST', json: { username }, token });
+                await request('/connections/lastfm/sync', { method: 'POST', token }).catch(() => undefined);
+                invalidate();
+              })
+            }
           />
           {error ? <Text color={colors.red}>{error}</Text> : null}
         </>

@@ -13,7 +13,10 @@ export default function SignUp() {
   const update = (key: keyof typeof form) => (value: string) => setForm((current) => ({ ...current, [key]: value }));
 
   return (
-    <AuthLayout title="Create your account" intro="Bring your listening history and find people who hear things the way you do.">
+    <AuthLayout
+      title="Create your account"
+      intro="Bring your listening history and find people who hear things the way you do."
+    >
       {error ? <Notice tone="error" title="Could not create the account" body={error} /> : null}
       <Field label="Name" value={form.display_name} onChangeText={update('display_name')} autoComplete="name" />
       <Field
@@ -24,8 +27,22 @@ export default function SignUp() {
         autoComplete="username-new"
         placeholder="letters, digits, dots, underscores"
       />
-      <Field label="Email" value={form.email} onChangeText={update('email')} autoCapitalize="none" keyboardType="email-address" autoComplete="email" />
-      <Field label="Password" value={form.password} onChangeText={update('password')} secureTextEntry autoComplete="new-password" placeholder="at least 8 characters" />
+      <Field
+        label="Email"
+        value={form.email}
+        onChangeText={update('email')}
+        autoCapitalize="none"
+        keyboardType="email-address"
+        autoComplete="email"
+      />
+      <Field
+        label="Password"
+        value={form.password}
+        onChangeText={update('password')}
+        secureTextEntry
+        autoComplete="new-password"
+        placeholder="at least 8 characters"
+      />
       <Button label="Create account" busy={busy} onPress={() => run(() => signUp(form))} />
       <Link href="/sign-in" asChild>
         <Text variant="bodyStrong" color={colors.red} accessibilityRole="link">
