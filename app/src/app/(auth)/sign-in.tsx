@@ -13,7 +13,7 @@ export default function SignIn() {
   const [password, setPassword] = useState('');
 
   return (
-    <AuthLayout title="Sign in" intro="See what your friends have on repeat, and show them yours.">
+    <AuthLayout title="Welcome back" intro="See what your friends have on repeat, and show them yours.">
       {error ? <Notice tone="error" title="Could not sign in" body={error} /> : null}
       <Field
         label="Username or email"

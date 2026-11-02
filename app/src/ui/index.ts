@@ -3,6 +3,8 @@ export { Bars } from './Bars';
 export { Button } from './Button';
 export { Card } from './Card';
 export { Field } from './Field';
+export { LogoMark, Wordmark } from './Logo';
+export { MeetingWave } from './MeetingWave';
 export { Notice } from './Notice';
 export { Screen } from './Screen';
 export { Segmented } from './Segmented';

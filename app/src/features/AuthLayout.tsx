@@ -1,19 +1,20 @@
 import { ReactNode } from 'react';
 import { KeyboardAvoidingView, Platform, StyleSheet, View } from 'react-native';
 
-import { Bars, Screen, Text, colors, space } from '@/ui';
-
-const signature = [3, 5, 8, 4, 9, 12, 7, 10, 14, 9, 6, 11, 16, 12, 8, 5, 9, 13, 10, 6, 4, 7, 5, 3];
+import { MeetingWave, Screen, Text, Wordmark, colors, space } from '@/ui';
 
 export function AuthLayout({ title, intro, children }: { title: string; intro: string; children: ReactNode }) {
   return (
     <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
       <Screen>
-        <View style={styles.hero}>
-          <Bars values={signature} height={72} label="" />
-          <Text variant="hero" color={colors.text}>
-            {title}
-          </Text>
+        <View style={styles.brand}>
+          <Wordmark size={22} />
+        </View>
+        <View style={styles.wave}>
+          <MeetingWave height={96} />
+        </View>
+        <View style={styles.heading}>
+          <Text variant="hero">{title}</Text>
           <Text color={colors.muted}>{intro}</Text>
         </View>
         <View style={styles.form}>{children}</View>
@@ -23,12 +24,8 @@ export function AuthLayout({ title, intro, children }: { title: string; intro: s
 }
 
 const styles = StyleSheet.create({
-  hero: {
-    backgroundColor: colors.raised,
-    borderRadius: 22,
-    padding: space.xl,
-    paddingTop: space.xxl,
-    gap: space.md,
-  },
+  brand: { paddingTop: space.lg },
+  wave: { paddingVertical: space.xl },
+  heading: { gap: space.sm, paddingBottom: space.md },
   form: { gap: space.lg },
 });

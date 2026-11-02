@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "music-social",
+    "name": "music social",
     "slug": "music-social",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -28,7 +28,15 @@
       "expo-status-bar",
       "expo-secure-store",
       "expo-web-browser",
-      "expo-font"
+      "expo-font",
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/splash-icon.png",
+          "imageWidth": 120,
+          "backgroundColor": "#110B1C"
+        }
+      ]
     ],
     "scheme": "musicsocial",
     "experiments": {

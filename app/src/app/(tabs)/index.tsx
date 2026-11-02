@@ -4,7 +4,7 @@ import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import { useFeed } from '@/api/hooks';
 import { useSession } from '@/auth/session';
 import { PostCard } from '@/features/posts/PostCard';
-import { Button, Notice, Screen, Text, colors, space } from '@/ui';
+import { Button, Notice, Screen, Wordmark, colors, space } from '@/ui';
 
 export default function Feed() {
   const { user } = useSession();
@@ -13,9 +13,9 @@ export default function Feed() {
   return (
     <Screen refreshing={feed.isRefetching} onRefresh={feed.refetch}>
       <View style={styles.top}>
-        <Text variant="title" style={{ flex: 1 }}>
-          Feed
-        </Text>
+        <View style={{ flex: 1 }}>
+          <Wordmark size={20} />
+        </View>
         <Link href="/compose" asChild>
           <Button label="Share" compact onPress={() => undefined} />
         </Link>
