@@ -5,7 +5,7 @@ import { useFollow, useMatch, useStats } from '@/api/hooks';
 import type { Profile } from '@/api/types';
 import { Avatar, Bars, Button, Text, colors, radius, space } from '@/ui';
 
-import { count, dailySeries, percent, plural } from '../format';
+import { count, dailySeries, listing, percent, plural } from '../format';
 
 export function ProfileHeader({ profile }: { profile: Profile }) {
   const follow = useFollow(profile.username);
@@ -51,7 +51,7 @@ export function ProfileHeader({ profile }: { profile: Profile }) {
           <Text variant="bodyStrong" color={colors.yellow}>
             {percent(match.data.similarity)} taste match.
           </Text>{' '}
-          You both play {match.data.shared_artists.slice(0, 3).join(', ')}.
+          You both play {listing(match.data.shared_artists.slice(0, 3))}.
         </Text>
       ) : null}
 

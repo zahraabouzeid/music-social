@@ -1,9 +1,105 @@
-import { Notice, Screen } from '@/ui';
+import { Link } from 'expo-router';
+import { useState } from 'react';
+import { ActivityIndicator, Pressable, StyleSheet, View } from 'react-native';
 
-export default function Placeholder() {
+import { useBoard } from '@/api/hooks';
+import type { BoardEntry, Period, Scope } from '@/api/types';
+import { useSession } from '@/auth/session';
+import { count, hours, periodOptions, periodPhrase } from '@/features/format';
+import { Avatar, Field, Notice, Screen, Segmented, Text, colors, radius, space } from '@/ui';
+
+const scopes: { value: Scope; label: string }[] = [
+  { value: 'following', label: 'Friends' },
+  { value: 'global', label: 'Everyone' },
+];
+
+export default function Boards() {
+  const { user } = useSession();
+  const [scope, setScope] = useState<Scope>('following');
+  const [period, setPeriod] = useState<Period>('week');
+  const [artist, setArtist] = useState('');
+  const board = useBoard(scope, period, artist);
+
   return (
-    <Screen>
-      <Notice title="Coming next" />
+    <Screen refreshing={board.isRefetching} onRefresh={board.refetch}>
+      <Text variant="title">Leaderboard</Text>
+      <View style={styles.filters}>
+        <Segmented label="Who to compare" options={scopes} value={scope} onChange={setScope} />
+        <Segmented label="Time range" options={periodOptions} value={period} onChange={setPeriod} />
+        <Field
+          label="Artist (optional)"
+          value={artist}
+          onChangeText={setArtist}
+          placeholder="Who listens to Ghost the most?"
+          autoCapitalize="words"
+        />
+      </View>
+
+      <Text color={colors.muted}>
+        Ranked by listening time in {periodPhrase(period)}
+        {artist.trim() ? ` for ${artist.trim()}` : ''}.
+      </Text>
+
+      {board.isLoading ? <ActivityIndicator color={colors.red} /> : null}
+      {board.error ? <Notice tone="error" title="The leaderboard could not load" body={board.error.message} /> : null}
+      {board.data?.entries.length === 0 ? (
+        <Notice
+          title="Nobody on the board yet"
+          body={scope === 'following' ? 'Follow people or switch to Everyone.' : 'Nobody has plays in this range yet.'}
+        />
+      ) : null}
+      <View style={styles.list}>
+        {board.data?.entries.map((entry) => (
+          <Row key={entry.username} entry={entry} isSelf={entry.username === user?.username} />
+        ))}
+      </View>
     </Screen>
   );
 }
+
+function Row({ entry, isSelf }: { entry: BoardEntry; isSelf: boolean }) {
+  const leader = entry.rank === 1;
+  return (
+    <Link href={`/u/${entry.username}`} asChild>
+      <Pressable
+        accessibilityRole="link"
+        style={StyleSheet.flatten([styles.row, leader && styles.leader, isSelf && !leader && styles.self])}
+      >
+        <Text variant="number" color={leader ? colors.yellow : colors.muted} style={styles.rank}>
+          {entry.rank}
+        </Text>
+        <Avatar name={entry.display_name} seed={entry.username} size={40} />
+        <View style={{ flex: 1 }}>
+          <Text variant="bodyStrong" color={leader ? colors.onInk : colors.ink} numberOfLines={1}>
+            {entry.display_name}
+            {isSelf ? ' (you)' : ''}
+          </Text>
+          <Text variant="small" color={leader ? colors.onInkMuted : colors.muted}>
+            {count(entry.plays)} plays
+          </Text>
+        </View>
+        <Text variant="heading" color={leader ? colors.onInk : colors.ink}>
+          {hours(entry.minutes)}
+        </Text>
+      </Pressable>
+    </Link>
+  );
+}
+
+const styles = StyleSheet.create({
+  filters: { gap: space.md },
+  list: { gap: space.sm },
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: space.md,
+    backgroundColor: colors.card,
+    borderRadius: radius.md,
+    borderWidth: 1,
+    borderColor: colors.line,
+    padding: space.md,
+  },
+  leader: { backgroundColor: colors.ink, borderColor: colors.ink },
+  self: { borderColor: colors.red, borderWidth: 1.5 },
+  rank: { width: 36, textAlign: 'center' },
+});
