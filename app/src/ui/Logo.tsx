@@ -34,7 +34,7 @@ export function Wordmark({ size = 24 }: { size?: number }) {
   return (
     <View style={styles.row} accessibilityRole="header" accessibilityLabel={brand.name}>
       <LogoMark size={size * 1.35} />
-      <Text style={{ fontFamily: fonts.display, fontSize: size, lineHeight: size * 1.1, letterSpacing: -size * 0.04 }}>
+      <Text style={{ fontFamily: fonts.brand, fontSize: size, lineHeight: size * 1.1, letterSpacing: -size * 0.04 }}>
         {brand.name}
       </Text>
     </View>
