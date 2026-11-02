@@ -18,4 +18,4 @@ export { SearchField } from './SearchField';
 export { Segmented } from './Segmented';
 export { Block, PostSkeleton, RowSkeleton, Skeleton } from './Skeleton';
 export { Text } from './Text';
-export { colors, fonts, radius, space, type } from './theme';
+export { colors, contentWidth, fonts, radius, space, type } from './theme';

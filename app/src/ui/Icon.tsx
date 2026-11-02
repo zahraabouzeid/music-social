@@ -2,7 +2,8 @@ import Svg, { Circle, Path } from 'react-native-svg';
 
 import { colors } from './theme';
 
-export type IconName = 'feed' | 'discover' | 'boards' | 'plus' | 'heart' | 'settings' | 'upload' | 'search' | 'chevron';
+export type IconName =
+  'feed' | 'discover' | 'boards' | 'plus' | 'heart' | 'settings' | 'upload' | 'search' | 'chevron' | 'chat' | 'send';
 
 type Props = {
   name: IconName;
@@ -65,6 +66,10 @@ export function Icon({ name, size = 24, color = colors.text, filled = false }: P
         </>
       ) : null}
       {name === 'chevron' ? <Path d="M9 5l7 7-7 7" {...stroke} /> : null}
+      {name === 'chat' ? (
+        <Path d="M5 5h14a1 1 0 011 1v10a1 1 0 01-1 1H10l-5 4V6a1 1 0 011-1z" {...stroke} fill={fill} />
+      ) : null}
+      {name === 'send' ? <Path d="M4 12l16-8-6 16-2.5-6.5L4 12z" {...stroke} fill={fill} /> : null}
       {name === 'search' ? (
         <>
           <Circle cx={11} cy={11} r={6.5} {...stroke} />
