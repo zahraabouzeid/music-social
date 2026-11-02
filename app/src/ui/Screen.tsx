@@ -1,0 +1,44 @@
+import { ReactNode } from 'react';
+import { RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+
+import { colors, contentWidth, space } from './theme';
+
+type Props = {
+  children: ReactNode;
+  refreshing?: boolean;
+  onRefresh?: () => void;
+  scroll?: boolean;
+};
+
+export function Screen({ children, refreshing = false, onRefresh, scroll = true }: Props) {
+  const body = <View style={styles.column}>{children}</View>;
+  return (
+    <SafeAreaView style={styles.safe} edges={['top']}>
+      {scroll ? (
+        <ScrollView
+          contentContainerStyle={styles.scroll}
+          refreshControl={onRefresh ? <RefreshControl refreshing={refreshing} onRefresh={onRefresh} /> : undefined}
+          keyboardShouldPersistTaps="handled"
+        >
+          {body}
+        </ScrollView>
+      ) : (
+        body
+      )}
+    </SafeAreaView>
+  );
+}
+
+const styles = StyleSheet.create({
+  safe: { flex: 1, backgroundColor: colors.paper },
+  scroll: { flexGrow: 1, paddingBottom: space.xxl },
+  column: {
+    width: '100%',
+    maxWidth: contentWidth,
+    alignSelf: 'center',
+    paddingHorizontal: space.lg,
+    paddingTop: space.lg,
+    gap: space.lg,
+  },
+});
