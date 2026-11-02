@@ -1,9 +1,16 @@
 import { View, ViewStyle } from 'react-native';
-import Svg, { Rect } from 'react-native-svg';
+import Svg, { Defs, LinearGradient, Rect, Stop } from 'react-native-svg';
 
 import { colors } from './theme';
 
-const GROUNDS = ['#3B1E54', '#1E3A5F', '#4A1C2C', '#1F4A3F', '#47361A', '#2B2B5E'];
+const GROUNDS: [string, string][] = [
+  ['#FA2D48', '#6E0E24'],
+  ['#5856D6', '#1C1A55'],
+  ['#0A84FF', '#08295C'],
+  ['#AF52DE', '#3A1257'],
+  ['#E8590C', '#5C2004'],
+  ['#30A46C', '#0D3622'],
+];
 const BAR_COUNT = 21;
 
 function hash(seed: string) {
@@ -31,7 +38,8 @@ type Props = {
 export function Cover({ seed, style, aspectRatio = 1 }: Props) {
   const value = hash(seed);
   const next = random(value);
-  const ground = GROUNDS[value % GROUNDS.length];
+  const [from, to] = GROUNDS[value % GROUNDS.length];
+  const gradientId = `cover-${value}`;
   const heights = Array.from({ length: BAR_COUNT }, (_, index) => {
     const envelope = Math.sin(((index + 0.5) / BAR_COUNT) * Math.PI);
     return 0.12 + envelope * (0.35 + next() * 0.5);
@@ -42,8 +50,15 @@ export function Cover({ seed, style, aspectRatio = 1 }: Props) {
   const slot = width / BAR_COUNT;
 
   return (
-    <View style={[{ aspectRatio, borderRadius: 12, overflow: 'hidden', backgroundColor: ground }, style]}>
+    <View style={[{ aspectRatio, borderRadius: 8, overflow: 'hidden', backgroundColor: to }, style]}>
       <Svg width="100%" height="100%" viewBox={`0 0 ${width} ${height}`} accessibilityElementsHidden>
+        <Defs>
+          <LinearGradient id={gradientId} x1="0" y1="0" x2="1" y2="1">
+            <Stop offset="0" stopColor={from} />
+            <Stop offset="1" stopColor={to} />
+          </LinearGradient>
+        </Defs>
+        <Rect x={0} y={0} width={width} height={height} fill={`url(#${gradientId})`} />
         {heights.map((bar, index) => {
           const barHeight = bar * height * 0.8;
           return (
@@ -54,8 +69,8 @@ export function Cover({ seed, style, aspectRatio = 1 }: Props) {
               width={slot * 0.56}
               height={barHeight}
               rx={slot * 0.28}
-              fill={index === peak ? colors.highlight : colors.text}
-              opacity={index === peak ? 1 : 0.85}
+              fill={colors.text}
+              opacity={index === peak ? 1 : 0.6}
             />
           );
         })}
