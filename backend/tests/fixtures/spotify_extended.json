@@ -1,0 +1,6 @@
+[
+  {"ts": "2024-05-01T18:30:12Z", "ms_played": 241000, "master_metadata_track_name": "Alkaline", "master_metadata_album_artist_name": "Sleep Token", "master_metadata_album_album_name": "Take Me Back To Eden"},
+  {"ts": "2024-05-01T18:35:40Z", "ms_played": 230000, "master_metadata_track_name": "The Summoning", "master_metadata_album_artist_name": "Sleep Token", "master_metadata_album_album_name": "Take Me Back To Eden"},
+  {"ts": "2024-05-02T07:10:00Z", "ms_played": 210000, "master_metadata_track_name": "Holy Roller", "master_metadata_album_artist_name": "Spiritbox", "master_metadata_album_album_name": "Eternal Blue"},
+  {"ts": "2024-05-02T07:12:00Z", "ms_played": 3000, "master_metadata_track_name": "Too Short", "master_metadata_album_artist_name": "Spiritbox", "master_metadata_album_album_name": "Eternal Blue"}
+]
