@@ -5,7 +5,7 @@ import { Animated, Platform, Pressable, StyleSheet, View } from 'react-native';
 
 import { useDeletePost, useLike } from '@/api/hooks';
 import type { Post } from '@/api/types';
-import { Avatar, Cover, Icon, LogoMark, Text, colors, radius, space } from '@/ui';
+import { Avatar, Cover, Icon, LogoMark, Text, colors, pressedStyle, radius, space } from '@/ui';
 
 import { ago, count, hours, periodPhrase } from '../format';
 
@@ -27,7 +27,7 @@ export function PostCard({ post, canDelete = false }: { post: Post; canDelete?: 
   return (
     <View style={styles.post}>
       <Link href={`/u/${post.author.username}`} asChild>
-        <Pressable accessibilityRole="link" style={styles.author}>
+        <Pressable accessibilityRole="link" style={pressedStyle(styles.author)}>
           <Avatar name={post.author.display_name} seed={post.author.username} size={36} />
           <View style={{ flex: 1 }}>
             <Text variant="bodyStrong" numberOfLines={1}>

@@ -17,6 +17,7 @@ import {
   Skeleton,
   Text,
   colors,
+  pressedStyle,
   radius,
   space,
 } from '@/ui';
@@ -82,7 +83,7 @@ export default function Boards() {
 function Row({ entry, isSelf }: { entry: BoardEntry; isSelf: boolean }) {
   return (
     <Link href={`/u/${entry.username}`} asChild>
-      <Pressable accessibilityRole="link" style={StyleSheet.flatten([styles.row, isSelf && styles.self])}>
+      <Pressable accessibilityRole="link" style={pressedStyle(styles.row, isSelf && styles.self)}>
         <Text variant="heading" color={colors.muted} style={styles.rank}>
           {entry.rank}
         </Text>

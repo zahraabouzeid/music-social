@@ -19,7 +19,17 @@ export function Screen({ children, refreshing = false, onRefresh, scroll = true,
       {scroll ? (
         <ScrollView
           contentContainerStyle={styles.scroll}
-          refreshControl={onRefresh ? <RefreshControl refreshing={refreshing} onRefresh={onRefresh} /> : undefined}
+          refreshControl={
+            onRefresh ? (
+              <RefreshControl
+                refreshing={refreshing}
+                onRefresh={onRefresh}
+                tintColor={colors.accent}
+                colors={[colors.accent]}
+                progressBackgroundColor={colors.surface}
+              />
+            ) : undefined
+          }
           keyboardShouldPersistTaps="handled"
         >
           {body}
