@@ -10,7 +10,7 @@ import { useSession } from '@/auth/session';
 import { ago, count } from '@/features/format';
 import { FileResult, pickAndImport } from '@/features/upload';
 import { useSubmit } from '@/features/useSubmit';
-import { Button, Card, Field, Notice, Screen, Text, colors, space } from '@/ui';
+import { Button, Group, GroupContent, GroupRow, Icon, Notice, Screen, SearchField, Text, colors, space } from '@/ui';
 
 const serviceNames: Record<Service, string> = {
   spotify: 'Spotify',
@@ -54,40 +54,52 @@ export default function Connections() {
         />
       ) : null}
 
-      <Card>
-        <Text variant="heading">Import your history</Text>
-        <Text color={colors.muted}>
-          Request your data from Spotify (Extended streaming history) or Apple (privacy.apple.com), then pick the JSON
-          or CSV files here. Plays you already have are skipped.
-        </Text>
-        <Button label="Choose files" icon="upload" tone="secondary" busy={upload.busy} onPress={startImport} />
-        {upload.error ? <Text color={colors.accent}>{upload.error}</Text> : null}
+      <Group
+        title="Import your history"
+        footer="Request your data from Spotify (Extended streaming history) or Apple (privacy.apple.com), then pick the JSON or CSV files. Plays you already have are skipped."
+      >
+        <GroupRow
+          label={upload.busy ? 'Importing…' : 'Choose files'}
+          onPress={upload.busy ? undefined : startImport}
+          trailing={<Icon name="upload" size={20} color={colors.muted} />}
+        />
         {results.map((result, index) => (
-          <Text key={`${result.name}-${index}`} variant="small" color={result.error ? colors.accent : colors.text}>
-            {result.name}:{' '}
-            {result.record
-              ? `${count(result.record.plays_added)} new of ${count(result.record.plays_found)} plays from ${serviceNames[result.record.service]}`
-              : result.error}
-          </Text>
+          <GroupRow
+            key={`${result.name}-${index}`}
+            label={result.name}
+            detail={
+              result.record
+                ? `${count(result.record.plays_added)} new of ${count(result.record.plays_found)} plays from ${serviceNames[result.record.service]}`
+                : result.error
+            }
+          />
         ))}
-      </Card>
+        {upload.error ? <GroupRow label="Import failed" detail={upload.error} /> : null}
+      </Group>
 
-      <Text variant="heading">Live connections</Text>
-      {available.length === 0 && !connections.isLoading ? (
-        <Notice title="No live connections on this server" body="File imports work without them." />
-      ) : null}
-      {available.includes('lastfm') ? <LastfmCard connection={connected.get('lastfm')} /> : null}
-      {available.includes('spotify') ? <SpotifyCard connection={connected.get('spotify')} /> : null}
+      <Group
+        title="Live connections"
+        footer={
+          available.length === 0 && !connections.isLoading
+            ? 'No live connections are set up on this server. File imports work without them.'
+            : 'New plays arrive every few minutes.'
+        }
+      >
+        {available.includes('lastfm') ? <LastfmRow connection={connected.get('lastfm')} /> : null}
+        {available.includes('spotify') ? <SpotifyRow connection={connected.get('spotify')} /> : null}
+      </Group>
 
       {imports.data && imports.data.length > 0 ? (
-        <View style={styles.history}>
-          <Text variant="heading">Past imports</Text>
+        <Group title="Past imports">
           {imports.data.map((record) => (
-            <Text key={record.id} variant="small" color={colors.muted}>
-              {serviceNames[record.service]}, {ago(record.created_at)}: {count(record.plays_added)} new plays
-            </Text>
+            <GroupRow
+              key={record.id}
+              label={serviceNames[record.service]}
+              detail={ago(record.created_at)}
+              value={`${count(record.plays_added)} new`}
+            />
           ))}
-        </View>
+        </Group>
       ) : null}
     </Screen>
   );
@@ -95,122 +107,99 @@ export default function Connections() {
 
 type Connection = { external_id: string; last_synced_at: string | null; last_error: string | null };
 
-function ConnectionStatus({ connection }: { connection: Connection }) {
-  return (
-    <>
-      <Text color={colors.muted}>
-        Connected as {connection.external_id}
-        {connection.last_synced_at ? `, synced ${ago(connection.last_synced_at)}` : ', first sync pending'}.
-      </Text>
-      {connection.last_error ? <Text color={colors.accent}>Last sync failed: {connection.last_error}</Text> : null}
-    </>
-  );
+function status(connection: Connection) {
+  if (connection.last_error) return `Last sync failed: ${connection.last_error}`;
+  const synced = connection.last_synced_at ? `synced ${ago(connection.last_synced_at)}` : 'first sync pending';
+  return `${connection.external_id}, ${synced}`;
 }
 
-function ConnectedActions({ service }: { service: Service }) {
+function ConnectedRow({ name, service, connection }: { name: string; service: Service; connection: Connection }) {
   const { token } = useSession();
   const invalidate = useInvalidateListening();
   const { busy, error, run } = useSubmit();
+  const call = (path: string, method: 'POST' | 'DELETE') =>
+    run(async () => {
+      await request(path, { method, token });
+      invalidate();
+    });
   return (
-    <>
-      <View style={styles.actions}>
+    <GroupRow
+      label={name}
+      detail={error ?? status(connection)}
+      trailing={
+        <View style={styles.actions}>
+          <Button label="Sync" compact busy={busy} onPress={() => call(`/connections/${service}/sync`, 'POST')} />
+          <Button label="Remove" tone="quiet" compact onPress={() => call(`/connections/${service}`, 'DELETE')} />
+        </View>
+      }
+    />
+  );
+}
+
+function LastfmRow({ connection }: { connection?: Connection }) {
+  const { token } = useSession();
+  const invalidate = useInvalidateListening();
+  const [username, setUsername] = useState('');
+  const { busy, error, run } = useSubmit();
+
+  if (connection) return <ConnectedRow name="Last.fm" service="lastfm" connection={connection} />;
+  return (
+    <GroupContent>
+      <View style={{ gap: 2 }}>
+        <Text variant="bodyStrong">Last.fm</Text>
+        <Text variant="small" color={colors.muted}>
+          Brings in everything you scrobble, from any player.
+        </Text>
+      </View>
+      <View style={styles.inline}>
+        <View style={{ flex: 1 }}>
+          <SearchField
+            value={username}
+            onChangeText={setUsername}
+            placeholder="Last.fm username"
+            accessibilityLabel="Last.fm username"
+          />
+        </View>
         <Button
-          label="Sync now"
+          label="Connect"
           compact
           busy={busy}
+          disabled={!username.trim()}
           onPress={() =>
             run(async () => {
-              await request(`/connections/${service}/sync`, { method: 'POST', token });
-              invalidate();
-            })
-          }
-        />
-        <Button
-          label="Disconnect"
-          tone="quiet"
-          compact
-          onPress={() =>
-            run(async () => {
-              await request(`/connections/${service}`, { method: 'DELETE', token });
+              await request('/connections/lastfm', { method: 'POST', json: { username }, token });
+              await request('/connections/lastfm/sync', { method: 'POST', token }).catch(() => undefined);
               invalidate();
             })
           }
         />
       </View>
       {error ? <Text color={colors.accent}>{error}</Text> : null}
-    </>
+    </GroupContent>
   );
 }
 
-function LastfmCard({ connection }: { connection?: Connection }) {
-  const { token } = useSession();
-  const invalidate = useInvalidateListening();
-  const [username, setUsername] = useState('');
-  const { busy, error, run } = useSubmit();
-
-  return (
-    <Card>
-      <Text variant="heading">Last.fm</Text>
-      {connection ? (
-        <>
-          <ConnectionStatus connection={connection} />
-          <ConnectedActions service="lastfm" />
-        </>
-      ) : (
-        <>
-          <Text color={colors.muted}>Brings in everything you scrobble, from any player.</Text>
-          <Field label="Last.fm username" value={username} onChangeText={setUsername} autoCapitalize="none" />
-          <Button
-            label="Connect Last.fm"
-            tone="secondary"
-            busy={busy}
-            disabled={!username.trim()}
-            onPress={() =>
-              run(async () => {
-                await request('/connections/lastfm', { method: 'POST', json: { username }, token });
-                await request('/connections/lastfm/sync', { method: 'POST', token }).catch(() => undefined);
-                invalidate();
-              })
-            }
-          />
-          {error ? <Text color={colors.accent}>{error}</Text> : null}
-        </>
-      )}
-    </Card>
-  );
-}
-
-function SpotifyCard({ connection }: { connection?: Connection }) {
+function SpotifyRow({ connection }: { connection?: Connection }) {
   const { token } = useSession();
   const { busy, error, run } = useSubmit();
 
+  if (connection) return <ConnectedRow name="Spotify" service="spotify" connection={connection} />;
   const connect = () =>
     run(async () => {
       const { url } = await request<{ url: string }>('/connections/spotify/authorize', { token });
       if (Platform.OS === 'web') globalThis.location.assign(url);
       else await WebBrowser.openBrowserAsync(url);
     });
-
   return (
-    <Card>
-      <Text variant="heading">Spotify</Text>
-      {connection ? (
-        <>
-          <ConnectionStatus connection={connection} />
-          <ConnectedActions service="spotify" />
-        </>
-      ) : (
-        <>
-          <Text color={colors.muted}>Picks up what you play on Spotify every few minutes.</Text>
-          <Button label="Connect Spotify" tone="secondary" busy={busy} onPress={connect} />
-          {error ? <Text color={colors.accent}>{error}</Text> : null}
-        </>
-      )}
-    </Card>
+    <GroupRow
+      label="Spotify"
+      detail={error ?? 'Picks up what you play on Spotify.'}
+      trailing={<Button label="Connect" compact busy={busy} onPress={connect} />}
+    />
   );
 }
 
 const styles = StyleSheet.create({
-  actions: { flexDirection: 'row', gap: space.sm },
-  history: { gap: space.xs },
+  actions: { flexDirection: 'row', gap: space.xs },
+  inline: { flexDirection: 'row', alignItems: 'center', gap: space.sm },
 });
