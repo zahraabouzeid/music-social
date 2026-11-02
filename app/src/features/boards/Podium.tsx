@@ -1,10 +1,10 @@
-import { Link } from 'expo-router';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
 import type { BoardEntry } from '@/api/types';
-import { Avatar, Text, colors, pressedStyle, radius, space } from '@/ui';
+import { Avatar, Text, colors, radius, space } from '@/ui';
 
 import { hours } from '../format';
+import { ProfileLink } from '../people/ProfileLink';
 
 const STEP_HEIGHT: Record<number, number> = { 0: 112, 1: 80, 2: 56 };
 
@@ -32,24 +32,22 @@ export function Podium({ entries, selfUsername }: { entries: BoardEntry[]; selfU
 function Place({ entry, place, isSelf }: { entry: BoardEntry; place: number; isSelf: boolean }) {
   const winner = place === 0;
   return (
-    <Link href={`/u/${entry.username}`} asChild>
-      <Pressable accessibilityRole="link" style={pressedStyle(styles.column)}>
-        <View style={[styles.ring, winner && styles.winnerRing]}>
-          <Avatar name={entry.display_name} seed={entry.username} size={winner ? 72 : 56} />
-        </View>
-        <Text variant="bodyStrong" numberOfLines={1} style={styles.center}>
-          {isSelf ? 'You' : entry.display_name}
+    <ProfileLink username={entry.username} style={styles.column}>
+      <View style={[styles.ring, winner && styles.winnerRing]}>
+        <Avatar name={entry.display_name} seed={entry.username} size={winner ? 72 : 56} />
+      </View>
+      <Text variant="bodyStrong" numberOfLines={1} style={styles.center}>
+        {isSelf ? 'You' : entry.display_name}
+      </Text>
+      <Text variant="small" color={colors.muted} style={styles.center}>
+        {hours(entry.minutes)}
+      </Text>
+      <View style={[styles.step, { height: STEP_HEIGHT[place] }, winner && styles.winnerStep]}>
+        <Text variant="title" color={winner ? colors.onHighlight : colors.muted}>
+          {entry.rank}
         </Text>
-        <Text variant="small" color={colors.muted} style={styles.center}>
-          {hours(entry.minutes)}
-        </Text>
-        <View style={[styles.step, { height: STEP_HEIGHT[place] }, winner && styles.winnerStep]}>
-          <Text variant="title" color={winner ? colors.onHighlight : colors.muted}>
-            {entry.rank}
-          </Text>
-        </View>
-      </Pressable>
-    </Link>
+      </View>
+    </ProfileLink>
   );
 }
 
