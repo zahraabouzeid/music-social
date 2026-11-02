@@ -48,7 +48,7 @@ export default function Compose() {
       {kind === 'track' ? (
         <View style={styles.list}>
           <Text variant="heading">Pick one of your recent songs</Text>
-          {plays.isLoading ? <ActivityIndicator color={colors.red} /> : null}
+          {plays.isLoading ? <ActivityIndicator color={colors.accent} /> : null}
           {uniquePlays.length === 0 && !plays.isLoading ? (
             <Notice title="No plays yet" body="Import your history or connect a service, then share what you hear." />
           ) : null}
@@ -62,10 +62,10 @@ export default function Compose() {
                 onPress={() => setTrackId(play.track_id)}
                 style={[styles.song, selected && styles.songSelected]}
               >
-                <Text variant="bodyStrong" color={selected ? colors.onInk : colors.ink} numberOfLines={1}>
+                <Text variant="bodyStrong" color={selected ? colors.bg : colors.text} numberOfLines={1}>
                   {play.title}
                 </Text>
-                <Text variant="small" color={selected ? colors.onInkMuted : colors.muted} numberOfLines={1}>
+                <Text variant="small" color={selected ? colors.raised : colors.muted} numberOfLines={1}>
                   {play.artist}
                 </Text>
               </Pressable>
@@ -102,12 +102,12 @@ export default function Compose() {
 const styles = StyleSheet.create({
   list: { gap: space.sm },
   song: {
-    backgroundColor: colors.card,
+    backgroundColor: colors.surface,
     borderWidth: 1,
     borderColor: colors.line,
     borderRadius: radius.md,
     paddingHorizontal: space.lg,
     paddingVertical: space.md,
   },
-  songSelected: { backgroundColor: colors.ink, borderColor: colors.ink },
+  songSelected: { backgroundColor: colors.text, borderColor: colors.text },
 });

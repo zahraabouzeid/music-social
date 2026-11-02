@@ -34,5 +34,5 @@ const styles = StyleSheet.create({
     gap: space.sm,
     alignItems: 'flex-start',
   },
-  error: { borderStyle: 'solid', borderColor: colors.red, backgroundColor: '#FDECEE' },
+  error: { borderStyle: 'solid', borderColor: colors.accent, backgroundColor: colors.dangerSurface },
 });

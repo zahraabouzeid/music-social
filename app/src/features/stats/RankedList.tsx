@@ -16,7 +16,7 @@ export function RankedList({ title, rows, empty }: { title: string; rows: Row[];
       ) : (
         rows.map((row, index) => (
           <View key={row.key} style={styles.row}>
-            <Text variant="number" style={styles.rank} color={index === 0 ? colors.red : colors.muted}>
+            <Text variant="number" style={styles.rank} color={index === 0 ? colors.accent : colors.muted}>
               {index + 1}
             </Text>
             <View style={styles.body}>
@@ -52,5 +52,5 @@ const styles = StyleSheet.create({
   titleLine: { flexDirection: 'row', alignItems: 'baseline', gap: space.sm },
   title: { flex: 1 },
   track: { height: 4, borderRadius: 2, backgroundColor: colors.line, marginTop: space.xs, overflow: 'hidden' },
-  meter: { height: 4, borderRadius: 2, backgroundColor: colors.ink },
+  meter: { height: 4, borderRadius: 2, backgroundColor: colors.text },
 });

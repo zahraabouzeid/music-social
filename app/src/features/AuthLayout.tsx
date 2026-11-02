@@ -11,10 +11,10 @@ export function AuthLayout({ title, intro, children }: { title: string; intro: s
       <Screen>
         <View style={styles.hero}>
           <Bars values={signature} height={72} label="" />
-          <Text variant="hero" color={colors.onInk}>
+          <Text variant="hero" color={colors.text}>
             {title}
           </Text>
-          <Text color={colors.onInkMuted}>{intro}</Text>
+          <Text color={colors.muted}>{intro}</Text>
         </View>
         <View style={styles.form}>{children}</View>
       </Screen>
@@ -24,7 +24,7 @@ export function AuthLayout({ title, intro, children }: { title: string; intro: s
 
 const styles = StyleSheet.create({
   hero: {
-    backgroundColor: colors.ink,
+    backgroundColor: colors.raised,
     borderRadius: 22,
     padding: space.xl,
     paddingTop: space.xxl,

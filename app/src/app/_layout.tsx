@@ -30,7 +30,7 @@ export default function RootLayout() {
   return (
     <QueryClientProvider client={queryClient}>
       <SessionProvider>
-        <StatusBar style="dark" />
+        <StatusBar style="light" />
         <Navigation />
       </SessionProvider>
     </QueryClientProvider>
@@ -46,10 +46,10 @@ function Navigation() {
     <Stack
       screenOptions={{
         headerShadowVisible: false,
-        headerStyle: { backgroundColor: colors.paper },
-        headerTitleStyle: { fontFamily: fonts.displayMedium, color: colors.ink },
-        headerTintColor: colors.ink,
-        contentStyle: { backgroundColor: colors.paper },
+        headerStyle: { backgroundColor: colors.bg },
+        headerTitleStyle: { fontFamily: fonts.displayMedium, color: colors.text },
+        headerTintColor: colors.text,
+        contentStyle: { backgroundColor: colors.bg },
       }}
     >
       <Stack.Protected guard={signedIn}>
@@ -68,8 +68,8 @@ function Navigation() {
 
 function Splash() {
   return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.paper }}>
-      <ActivityIndicator color={colors.red} />
+    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.bg }}>
+      <ActivityIndicator color={colors.accent} />
     </View>
   );
 }

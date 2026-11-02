@@ -38,7 +38,7 @@ export default function Settings() {
         <Text variant="heading">Your music</Text>
         <Text color={colors.muted}>Import your listening history or connect Spotify and Last.fm.</Text>
         <Link href="/connections" asChild>
-          <Button label="Manage music sources" tone="ink" onPress={() => undefined} />
+          <Button label="Manage music sources" tone="secondary" onPress={() => undefined} />
         </Link>
       </View>
 

@@ -16,7 +16,7 @@ export function StatsPanel({ username, isSelf }: { username: string; isSelf: boo
   return (
     <View style={styles.wrap}>
       <Segmented label="Time range" options={periodOptions} value={period} onChange={setPeriod} />
-      {isLoading ? <ActivityIndicator color={colors.red} /> : null}
+      {isLoading ? <ActivityIndicator color={colors.accent} /> : null}
       {error ? <Notice tone="error" title="Stats could not load" body={error.message} /> : null}
       {data && data.totals.plays === 0 ? (
         <Notice
@@ -25,7 +25,7 @@ export function StatsPanel({ username, isSelf }: { username: string; isSelf: boo
           action={
             isSelf ? (
               <Link href="/connections" asChild>
-                <Button label="Add your music" tone="ink" compact onPress={() => undefined} />
+                <Button label="Add your music" tone="secondary" compact onPress={() => undefined} />
               </Link>
             ) : undefined
           }

@@ -18,7 +18,7 @@ export function ProfileView({ username, insetTop = true }: { username: string; i
 
   return (
     <Screen refreshing={profile.isRefetching} onRefresh={refresh} insetTop={insetTop}>
-      {profile.isLoading ? <ActivityIndicator color={colors.red} /> : null}
+      {profile.isLoading ? <ActivityIndicator color={colors.accent} /> : null}
       {profile.error ? <Notice tone="error" title="This profile could not load" body={profile.error.message} /> : null}
       {profile.data ? (
         <>

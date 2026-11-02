@@ -32,7 +32,7 @@ export default function SignIn() {
       />
       <Button label="Sign in" busy={busy} onPress={() => run(() => signIn(login, password))} />
       <Link href="/sign-up" asChild>
-        <Text variant="bodyStrong" color={colors.red} accessibilityRole="link">
+        <Text variant="bodyStrong" color={colors.accent} accessibilityRole="link">
           New here? Create an account
         </Text>
       </Link>

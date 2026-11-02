@@ -27,7 +27,7 @@ export default function Discover() {
 
       {searching ? (
         <View style={styles.section}>
-          {search.isLoading ? <ActivityIndicator color={colors.red} /> : null}
+          {search.isLoading ? <ActivityIndicator color={colors.accent} /> : null}
           {search.data?.length === 0 ? <Text color={colors.muted}>Nobody matches “{query.trim()}”.</Text> : null}
           {search.data?.map((user) => (
             <UserRow key={user.id} username={user.username} displayName={user.display_name} />
@@ -36,7 +36,7 @@ export default function Discover() {
       ) : (
         <View style={styles.section}>
           <Text variant="heading">People who hear it like you</Text>
-          {suggestions.isLoading ? <ActivityIndicator color={colors.red} /> : null}
+          {suggestions.isLoading ? <ActivityIndicator color={colors.accent} /> : null}
           {suggestions.error ? (
             <Notice tone="error" title="Suggestions could not load" body={suggestions.error.message} />
           ) : null}
@@ -54,7 +54,7 @@ export default function Discover() {
                 trailing={<FollowButton username={suggestion.user.username} />}
               />
               <View style={styles.match}>
-                <Text variant="number" color={colors.red}>
+                <Text variant="number" color={colors.accent}>
                   {percent(suggestion.similarity)}
                 </Text>
                 <Text variant="small" color={colors.muted} style={{ flex: 1 }}>

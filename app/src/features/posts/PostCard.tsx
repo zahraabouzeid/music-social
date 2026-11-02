@@ -42,7 +42,7 @@ export function PostCard({ post, canDelete = false }: { post: Post; canDelete?: 
           onPress={() => like.mutate({ id: post.id, like: !liked })}
           style={[styles.likeButton, liked && styles.liked]}
         >
-          <Text variant="small" color={liked ? colors.onInk : colors.ink}>
+          <Text variant="small" color={liked ? colors.onAccent : colors.text}>
             {liked ? 'Liked' : 'Like'}
             {post.likes > 0 ? `  ${count(post.likes)}` : ''}
           </Text>
@@ -64,10 +64,10 @@ function TrackBlock({ track }: { track: NonNullable<Post['track']> }) {
     <View style={styles.track}>
       <View style={styles.disc} />
       <View style={{ flex: 1 }}>
-        <Text variant="heading" color={colors.onInk} numberOfLines={2}>
+        <Text variant="heading" color={colors.text} numberOfLines={2}>
           {track.title}
         </Text>
-        <Text color={colors.onInkMuted} numberOfLines={1}>
+        <Text color={colors.muted} numberOfLines={1}>
           {track.artist}
           {track.album ? `, ${track.album}` : ''}
         </Text>
@@ -84,7 +84,7 @@ function StatsBlock({ payload }: { payload: NonNullable<Post['payload']> }) {
       </Text>
       {payload.top_artists.map((artist, index) => (
         <View key={artist.name} style={styles.statRow}>
-          <Text variant="heading" color={index === 0 ? colors.red : colors.muted} style={{ width: 22 }}>
+          <Text variant="heading" color={index === 0 ? colors.accent : colors.muted} style={{ width: 22 }}>
             {index + 1}
           </Text>
           <Text variant={index === 0 ? 'title' : 'bodyStrong'} style={{ flex: 1 }} numberOfLines={1}>
@@ -103,7 +103,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: space.lg,
-    backgroundColor: colors.ink,
+    backgroundColor: colors.raised,
     borderRadius: radius.md,
     padding: space.lg,
   },
@@ -111,9 +111,9 @@ const styles = StyleSheet.create({
     width: 56,
     height: 56,
     borderRadius: 28,
-    backgroundColor: colors.inkSoft,
+    backgroundColor: colors.bg,
     borderWidth: 18,
-    borderColor: colors.red,
+    borderColor: colors.accent,
   },
   stats: { gap: space.sm, paddingVertical: space.xs },
   statRow: { flexDirection: 'row', alignItems: 'baseline', gap: space.sm },
@@ -125,6 +125,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: space.lg,
     paddingVertical: space.xs + 2,
   },
-  liked: { backgroundColor: colors.red, borderColor: colors.red },
+  liked: { backgroundColor: colors.accent, borderColor: colors.accent },
   quietButton: { paddingHorizontal: space.md, paddingVertical: space.xs + 2 },
 });

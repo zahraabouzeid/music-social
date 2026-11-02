@@ -7,14 +7,14 @@ export default function TabsLayout() {
     <Tabs
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: colors.red,
+        tabBarActiveTintColor: colors.text,
         tabBarInactiveTintColor: colors.muted,
         tabBarIcon: () => null,
         tabBarIconStyle: { display: 'none' },
         tabBarLabelStyle: { fontFamily: fonts.displayMedium, fontSize: 15 },
-        tabBarStyle: { backgroundColor: colors.card, borderTopColor: colors.line, height: 64 },
+        tabBarStyle: { backgroundColor: colors.bg, borderTopColor: colors.line, height: 64 },
         tabBarItemStyle: { justifyContent: 'center' },
-        sceneStyle: { backgroundColor: colors.paper },
+        sceneStyle: { backgroundColor: colors.bg },
       }}
     >
       <Tabs.Screen name="index" options={{ title: 'Feed' }} />

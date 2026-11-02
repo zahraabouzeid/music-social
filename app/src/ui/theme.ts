@@ -1,14 +1,16 @@
 export const colors = {
-  ink: '#1E1433',
-  inkSoft: '#2E2347',
-  paper: '#ECEAF3',
-  card: '#FFFFFF',
-  line: '#D8D4E4',
-  muted: '#6B6480',
-  red: '#E5233D',
-  yellow: '#FFC93C',
-  onInk: '#F6F3FF',
-  onInkMuted: '#A99FC4',
+  bg: '#110B1C',
+  surface: '#1A1229',
+  raised: '#251A3A',
+  line: '#33284D',
+  text: '#F4EFFF',
+  muted: '#A097BD',
+  faint: '#5E5478',
+  accent: '#FF3D5E',
+  onAccent: '#FFFFFF',
+  highlight: '#FFC93C',
+  onHighlight: '#1A1229',
+  dangerSurface: '#3A1424',
 } as const;
 
 export const fonts = {
