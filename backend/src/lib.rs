@@ -5,5 +5,6 @@ pub mod connections;
 pub mod error;
 pub mod http;
 pub mod listening;
+pub mod social;
 pub mod sources;
 pub mod stats;
