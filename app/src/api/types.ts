@@ -85,3 +85,41 @@ export type Connections = {
   available: Service[];
   connected: { service: Service; external_id: string; last_synced_at: string | null; last_error: string | null }[];
 };
+
+export type Member = { id: string; username: string; display_name: string };
+
+export type Message = {
+  id: string;
+  conversation_id: string;
+  kind: 'text' | 'track' | 'stats';
+  body: string;
+  payload: StatsPayload | null;
+  track: { id: number; title: string; artist: string; album: string | null } | null;
+  sender: Member;
+  created_at: string;
+};
+
+export type Conversation = {
+  id: string;
+  kind: 'direct' | 'group';
+  title: string | null;
+  members: Member[];
+  last_message: { kind: Message['kind']; body: string; sender_username: string; created_at: string } | null;
+  unread: number;
+  created_at: string;
+};
+
+export type NewMessage =
+  | { kind: 'text'; body: string }
+  | { kind: 'track'; track_id: number; body?: string }
+  | { kind: 'stats'; period: Period; body?: string };
+
+export type Listening = {
+  username: string;
+  display_name: string;
+  title: string;
+  artist: string;
+  album: string | null;
+  service: Service;
+  updated_at: string;
+};
