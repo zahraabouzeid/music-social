@@ -12,6 +12,7 @@ mod leaderboards;
 mod listening;
 mod posts;
 mod profiles;
+mod realtime;
 mod stats;
 
 pub fn routes() -> Router<AppState> {
@@ -26,4 +27,5 @@ pub fn routes() -> Router<AppState> {
         .merge(discovery::routes())
         .merge(leaderboards::routes())
         .merge(chat::routes())
+        .merge(realtime::routes())
 }

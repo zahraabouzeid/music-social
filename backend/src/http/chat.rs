@@ -6,6 +6,7 @@ use axum::{
 };
 use chrono::{DateTime, Utc};
 use serde::Deserialize;
+use serde_json::json;
 use uuid::Uuid;
 
 use super::auth::CurrentUser;
@@ -74,6 +75,10 @@ async fn create_group(
         members.push(accounts::find_by_username(&state.db, username).await?.id);
     }
     let id = repo::create_group(&state.db, current.user.id, title, &members).await?;
+    let everyone = repo::member_ids(&state.db, id).await?;
+    state
+        .hub
+        .publish(everyone, json!({ "type": "conversation", "id": id }));
     Ok((
         StatusCode::CREATED,
         Json(repo::find(&state.db, id, current.user.id).await?),
@@ -172,6 +177,10 @@ async fn send(
         },
     };
     let message = repo::send(&state.db, id, current.user.id, message).await?;
+    let members = repo::member_ids(&state.db, id).await?;
+    state
+        .hub
+        .publish(members, json!({ "type": "message", "message": message }));
     Ok((StatusCode::CREATED, Json(message)))
 }
 
