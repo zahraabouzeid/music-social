@@ -66,6 +66,8 @@ function Navigation() {
         <Stack.Screen name="settings" options={{ title: 'Settings' }} />
         <Stack.Screen name="connections" options={{ title: 'Music sources' }} />
         <Stack.Screen name="compose" options={{ title: 'Share', presentation: 'modal' }} />
+        <Stack.Screen name="chats/new" options={{ title: 'New chat', presentation: 'modal' }} />
+        <Stack.Screen name="chats/[id]" options={{ title: '' }} />
       </Stack.Protected>
       <Stack.Protected guard={!signedIn}>
         <Stack.Screen name="(auth)" options={{ headerShown: false }} />

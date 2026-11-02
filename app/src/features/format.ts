@@ -55,3 +55,7 @@ export function dailySeries(daily: { day: string; plays: number }[], days: numbe
 export function plural(value: number, one: string, many: string) {
   return value === 1 ? one : many;
 }
+
+export function clock(iso: string) {
+  return new Date(iso).toLocaleTimeString('en', { hour: '2-digit', minute: '2-digit', hour12: false });
+}
