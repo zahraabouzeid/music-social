@@ -1,13 +1,13 @@
-import { Link } from 'expo-router';
 import * as Haptics from 'expo-haptics';
 import { useRef } from 'react';
 import { Animated, Platform, Pressable, StyleSheet, View } from 'react-native';
 
 import { useDeletePost, useLike } from '@/api/hooks';
 import type { Post } from '@/api/types';
-import { Avatar, Cover, Icon, LogoMark, Text, colors, pressedStyle, radius, space } from '@/ui';
+import { Avatar, Cover, Icon, LogoMark, Text, colors, radius, space } from '@/ui';
 
 import { ago, count, hours, periodPhrase } from '../format';
+import { ProfileLink } from '../people/ProfileLink';
 
 function action(post: Post) {
   if (post.kind === 'track') return 'shared a song';
@@ -33,19 +33,17 @@ export function PostCard({ post, canDelete = false }: { post: Post; canDelete?: 
 
   return (
     <View style={styles.post}>
-      <Link href={`/u/${post.author.username}`} asChild>
-        <Pressable accessibilityRole="link" style={pressedStyle(styles.author)}>
-          <Avatar name={post.author.display_name} seed={post.author.username} size={36} />
-          <View style={{ flex: 1 }}>
-            <Text numberOfLines={1} color={colors.muted}>
-              <Text variant="bodyStrong">{post.author.display_name}</Text> {action(post)}
-            </Text>
-            <Text variant="small" color={colors.muted}>
-              {ago(post.created_at)}
-            </Text>
-          </View>
-        </Pressable>
-      </Link>
+      <ProfileLink username={post.author.username} style={styles.author}>
+        <Avatar name={post.author.display_name} seed={post.author.username} size={36} />
+        <View style={{ flex: 1 }}>
+          <Text numberOfLines={1} color={colors.muted}>
+            <Text variant="bodyStrong">{post.author.display_name}</Text> {action(post)}
+          </Text>
+          <Text variant="small" color={colors.muted}>
+            {ago(post.created_at)}
+          </Text>
+        </View>
+      </ProfileLink>
 
       {post.caption ? <Text variant={post.kind === 'text' ? 'lead' : 'body'}>{post.caption}</Text> : null}
       {post.kind === 'track' && post.track ? <TrackBlock track={post.track} /> : null}

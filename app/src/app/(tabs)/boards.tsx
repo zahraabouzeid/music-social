@@ -1,12 +1,12 @@
-import { Link } from 'expo-router';
 import { useState } from 'react';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
 import { useBoard } from '@/api/hooks';
 import type { BoardEntry, Period, Scope } from '@/api/types';
 import { useSession } from '@/auth/session';
 import { Podium } from '@/features/boards/Podium';
 import { count, hours, periodOptions, periodPhrase } from '@/features/format';
+import { ProfileLink } from '@/features/people/ProfileLink';
 import {
   Avatar,
   Notice,
@@ -17,7 +17,6 @@ import {
   Skeleton,
   Text,
   colors,
-  pressedStyle,
   radius,
   space,
 } from '@/ui';
@@ -82,26 +81,24 @@ export default function Boards() {
 
 function Row({ entry, isSelf }: { entry: BoardEntry; isSelf: boolean }) {
   return (
-    <Link href={`/u/${entry.username}`} asChild>
-      <Pressable accessibilityRole="link" style={pressedStyle(styles.row, isSelf && styles.self)}>
-        <Text variant="heading" color={colors.muted} style={styles.rank}>
-          {entry.rank}
+    <ProfileLink username={entry.username} style={[styles.row, isSelf && styles.self]}>
+      <Text variant="heading" color={colors.muted} style={styles.rank}>
+        {entry.rank}
+      </Text>
+      <Avatar name={entry.display_name} seed={entry.username} size={40} />
+      <View style={{ flex: 1 }}>
+        <Text variant="bodyStrong" color={colors.text} numberOfLines={1}>
+          {entry.display_name}
+          {isSelf ? ' (you)' : ''}
         </Text>
-        <Avatar name={entry.display_name} seed={entry.username} size={40} />
-        <View style={{ flex: 1 }}>
-          <Text variant="bodyStrong" color={colors.text} numberOfLines={1}>
-            {entry.display_name}
-            {isSelf ? ' (you)' : ''}
-          </Text>
-          <Text variant="small" color={colors.muted}>
-            {count(entry.plays)} plays
-          </Text>
-        </View>
-        <Text variant="heading" color={colors.text}>
-          {hours(entry.minutes)}
+        <Text variant="small" color={colors.muted}>
+          {count(entry.plays)} plays
         </Text>
-      </Pressable>
-    </Link>
+      </View>
+      <Text variant="heading" color={colors.text}>
+        {hours(entry.minutes)}
+      </Text>
+    </ProfileLink>
   );
 }
 
