@@ -35,7 +35,8 @@ export async function request<T>(path: string, { method = 'GET', token, json, bo
   if (response.status === 204) return undefined as T;
   const payload = await response.json().catch(() => null);
   if (!response.ok) {
-    const message = typeof payload?.error === 'string' ? payload.error : `Request failed with status ${response.status}`;
+    const message =
+      typeof payload?.error === 'string' ? payload.error : `Request failed with status ${response.status}`;
     throw new ApiError(response.status, capitalize(message));
   }
   return payload as T;

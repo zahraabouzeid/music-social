@@ -58,7 +58,10 @@ export default function Discover() {
                   {percent(suggestion.similarity)}
                 </Text>
                 <Text variant="small" color={colors.muted} style={{ flex: 1 }}>
-                  taste match{suggestion.shared_artists.length ? `, both play ${listing(suggestion.shared_artists.slice(0, 3))}` : ''}
+                  taste match
+                  {suggestion.shared_artists.length
+                    ? `, both play ${listing(suggestion.shared_artists.slice(0, 3))}`
+                    : ''}
                 </Text>
               </View>
             </Card>

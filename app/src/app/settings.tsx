@@ -19,8 +19,19 @@ export default function Settings() {
         {update.error ? <Notice tone="error" title="Profile not saved" body={update.error.message} /> : null}
         {update.isSuccess ? <Text color={colors.muted}>Profile saved.</Text> : null}
         <Field label="Name" value={displayName} onChangeText={setDisplayName} />
-        <Field label="Bio" value={bio} onChangeText={setBio} multiline maxLength={280} placeholder="What are you into?" />
-        <Button label="Save profile" busy={update.isPending} onPress={() => update.mutate({ display_name: displayName, bio })} />
+        <Field
+          label="Bio"
+          value={bio}
+          onChangeText={setBio}
+          multiline
+          maxLength={280}
+          placeholder="What are you into?"
+        />
+        <Button
+          label="Save profile"
+          busy={update.isPending}
+          onPress={() => update.mutate({ display_name: displayName, bio })}
+        />
       </View>
 
       <View style={styles.section}>

@@ -60,8 +60,7 @@ export function useFollow(username: string) {
   const token = useToken();
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (follow: boolean) =>
-      request(`/users/${username}/follow`, { method: follow ? 'PUT' : 'DELETE', token }),
+    mutationFn: (follow: boolean) => request(`/users/${username}/follow`, { method: follow ? 'PUT' : 'DELETE', token }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['profile'] });
       queryClient.invalidateQueries({ queryKey: ['suggestions'] });

@@ -15,7 +15,13 @@ export default function SignIn() {
   return (
     <AuthLayout title="Sign in" intro="See what your friends have on repeat, and show them yours.">
       {error ? <Notice tone="error" title="Could not sign in" body={error} /> : null}
-      <Field label="Username or email" value={login} onChangeText={setLogin} autoCapitalize="none" autoComplete="username" />
+      <Field
+        label="Username or email"
+        value={login}
+        onChangeText={setLogin}
+        autoCapitalize="none"
+        autoComplete="username"
+      />
       <Field
         label="Password"
         value={password}
