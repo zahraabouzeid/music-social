@@ -13,7 +13,7 @@ export default function Settings() {
   const [bio, setBio] = useState(user?.bio ?? '');
 
   return (
-    <Screen>
+    <Screen insetTop={false}>
       <View style={styles.section}>
         <Text variant="heading">Profile</Text>
         {update.error ? <Notice tone="error" title="Profile not saved" body={update.error.message} /> : null}
