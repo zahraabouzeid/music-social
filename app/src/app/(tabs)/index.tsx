@@ -17,7 +17,7 @@ export default function Feed() {
           <Wordmark size={20} />
         </View>
         <Link href="/compose" asChild>
-          <Button label="Share" compact onPress={() => undefined} />
+          <Button label="Share" icon="plus" compact onPress={() => undefined} />
         </Link>
       </View>
       {feed.isLoading ? <ActivityIndicator color={colors.accent} /> : null}
