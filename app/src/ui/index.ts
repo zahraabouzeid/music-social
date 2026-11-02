@@ -5,6 +5,7 @@ export { Card } from './Card';
 export { Cover } from './Cover';
 export { Divider } from './Divider';
 export { Field } from './Field';
+export { Group, GroupContent, GroupRow } from './Group';
 export { Icon } from './Icon';
 export { IconButton } from './IconButton';
 export type { IconName } from './Icon';
