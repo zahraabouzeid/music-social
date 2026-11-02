@@ -2,6 +2,7 @@ import { BlurView } from 'expo-blur';
 import { Tabs } from 'expo-router';
 import { StyleSheet, View } from 'react-native';
 
+import { useConversations } from '@/api/chat';
 import { useSession } from '@/auth/session';
 import { Avatar, Icon, IconName, colors, fonts } from '@/ui';
 
@@ -11,6 +12,8 @@ function TabIcon({ name, focused }: { name: IconName; focused: boolean }) {
 
 export default function TabsLayout() {
   const { user } = useSession();
+  const conversations = useConversations();
+  const unread = (conversations.data ?? []).reduce((total, conversation) => total + conversation.unread, 0);
   return (
     <Tabs
       screenOptions={{
@@ -30,6 +33,15 @@ export default function TabsLayout() {
       <Tabs.Screen
         name="discover"
         options={{ title: 'Discover', tabBarIcon: ({ focused }) => <TabIcon name="discover" focused={focused} /> }}
+      />
+      <Tabs.Screen
+        name="chats"
+        options={{
+          title: 'Chats',
+          tabBarIcon: ({ focused }) => <TabIcon name="chat" focused={focused} />,
+          tabBarBadge: unread > 0 ? (unread > 99 ? '99+' : unread) : undefined,
+          tabBarBadgeStyle: { backgroundColor: colors.accent, color: colors.onAccent, fontFamily: fonts.bodyBold },
+        }}
       />
       <Tabs.Screen
         name="boards"
