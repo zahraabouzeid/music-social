@@ -1,3 +1,4 @@
+pub mod now_playing;
 pub mod repo;
 pub mod sync;
 

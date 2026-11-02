@@ -10,6 +10,7 @@ async fn main() -> anyhow::Result<()> {
     let config = Config::from_env()?;
     let state = app::AppState::connect(config.clone()).await?;
     connections::sync::spawn_worker(state.db.clone(), state.sources.clone());
+    connections::now_playing::spawn_worker(state.db.clone(), state.sources.clone());
     let listener = tokio::net::TcpListener::bind(config.bind_addr).await?;
     tracing::info!(addr = %config.bind_addr, "listening");
     axum::serve(listener, app::router(state)).await?;

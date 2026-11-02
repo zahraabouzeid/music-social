@@ -13,7 +13,7 @@ use crate::{
     app::AppState,
     connections::{ConnectionSummary, repo, sync},
     error::{AppError, AppResult},
-    listening::Service,
+    listening::{Service, now_playing},
 };
 
 pub fn routes() -> Router<AppState> {
@@ -131,6 +131,7 @@ async fn disconnect(
     Path(service): Path<Service>,
 ) -> AppResult<StatusCode> {
     repo::delete(&state.db, current.user.id, service).await?;
+    now_playing::clear(&state.db, current.user.id, service).await?;
     Ok(StatusCode::NO_CONTENT)
 }
 

@@ -11,6 +11,7 @@ use crate::{
     accounts::{PublicUser, repo as accounts},
     app::AppState,
     error::AppResult,
+    listening::now_playing::{self, Listening},
     social::follows::{self, Counts},
 };
 
@@ -24,6 +25,7 @@ pub fn routes() -> Router<AppState> {
         )
         .route("/users/{username}/followers", get(followers))
         .route("/users/{username}/following", get(following))
+        .route("/users/{username}/now-playing", get(listening_now))
 }
 
 #[derive(Serialize)]
@@ -107,4 +109,17 @@ async fn search(
         return Ok(Json(Vec::new()));
     }
     Ok(Json(follows::search(&state.db, &query.q).await?))
+}
+
+async fn listening_now(
+    State(state): State<AppState>,
+    Path(username): Path<String>,
+) -> AppResult<Json<Option<Listening>>> {
+    let user = accounts::find_by_username(&state.db, &username).await?;
+    Ok(Json(
+        now_playing::for_users(&state.db, &[user.id])
+            .await?
+            .into_iter()
+            .next(),
+    ))
 }

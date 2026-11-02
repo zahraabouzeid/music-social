@@ -7,7 +7,7 @@ use super::{Connection, repo};
 use crate::{
     error::{AppError, AppResult},
     listening::{self, Play, Service},
-    sources::{SourceError, Sources},
+    sources::{SourceError, Sources, spotify::SpotifyClient},
 };
 
 const WORKER_INTERVAL: Duration = Duration::from_secs(60);
@@ -54,18 +54,7 @@ async fn fetch(
         }
         "spotify" => {
             let client = sources.spotify.as_ref().ok_or_else(not_configured)?;
-            let mut access_token = connection.access_token.clone().unwrap_or_default();
-            let expired = connection
-                .token_expires_at
-                .is_none_or(|at| at <= Utc::now());
-            if expired {
-                let refresh_token = connection.refresh_token.as_deref().ok_or_else(|| {
-                    AppError::BadRequest("Spotify needs to be connected again".into())
-                })?;
-                let tokens = client.refresh(refresh_token).await.map_err(source_error)?;
-                repo::store_tokens(db, connection.user_id, &connection.service, &tokens).await?;
-                access_token = tokens.access_token;
-            }
+            let access_token = spotify_token(db, client, connection).await?;
             let plays = client
                 .plays_since(&access_token, connection.synced_until)
                 .await
@@ -74,6 +63,26 @@ async fn fetch(
         }
         other => Err(AppError::BadRequest(format!("{other} cannot be synced"))),
     }
+}
+
+pub async fn spotify_token(
+    db: &PgPool,
+    client: &SpotifyClient,
+    connection: &Connection,
+) -> AppResult<String> {
+    let still_valid = connection
+        .token_expires_at
+        .is_some_and(|at| at > Utc::now());
+    if let (true, Some(token)) = (still_valid, connection.access_token.clone()) {
+        return Ok(token);
+    }
+    let refresh_token = connection
+        .refresh_token
+        .as_deref()
+        .ok_or_else(|| AppError::BadRequest("Spotify needs to be connected again".into()))?;
+    let tokens = client.refresh(refresh_token).await.map_err(source_error)?;
+    repo::store_tokens(db, connection.user_id, &connection.service, &tokens).await?;
+    Ok(tokens.access_token)
 }
 
 pub fn spawn_worker(db: PgPool, sources: Sources) {

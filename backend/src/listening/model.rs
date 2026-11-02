@@ -29,3 +29,10 @@ pub struct Play {
     pub played_at: DateTime<Utc>,
     pub ms_played: Option<i32>,
 }
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct NowPlaying {
+    pub title: String,
+    pub artist: String,
+    pub album: Option<String>,
+}
