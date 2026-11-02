@@ -6,3 +6,4 @@ pub mod error;
 pub mod http;
 pub mod listening;
 pub mod sources;
+pub mod stats;
