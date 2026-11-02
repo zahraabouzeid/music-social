@@ -2,13 +2,14 @@ use axum::Router;
 use sqlx::{PgPool, postgres::PgPoolOptions};
 use tower_http::{cors::CorsLayer, trace::TraceLayer};
 
-use crate::{config::Config, http, sources::Sources};
+use crate::{config::Config, http, realtime::Hub, sources::Sources};
 
 #[derive(Clone)]
 pub struct AppState {
     pub db: PgPool,
     pub config: Config,
     pub sources: Sources,
+    pub hub: Hub,
 }
 
 impl AppState {
@@ -27,6 +28,7 @@ impl AppState {
             db,
             config,
             sources,
+            hub: Hub::default(),
         }
     }
 }
