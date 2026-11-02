@@ -60,6 +60,17 @@ impl TestApp {
         Reply { status, body }
     }
 
+    pub async fn upload(&self, path: &str, token: &str, bytes: Vec<u8>) -> Reply {
+        let request = Request::builder()
+            .method(Method::POST)
+            .uri(format!("/api{path}"))
+            .header(header::AUTHORIZATION, format!("Bearer {token}"))
+            .header(header::CONTENT_TYPE, "application/octet-stream")
+            .body(Body::from(bytes))
+            .unwrap();
+        self.send(request).await
+    }
+
     pub async fn get(&self, path: &str, token: Option<&str>) -> Reply {
         self.request(Method::GET, path, token, None).await
     }
