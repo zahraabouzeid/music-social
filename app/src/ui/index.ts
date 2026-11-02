@@ -11,6 +11,7 @@ export { LogoMark, Wordmark } from './Logo';
 export { MeetingWave } from './MeetingWave';
 export { Notice } from './Notice';
 export { Screen } from './Screen';
+export { SearchField } from './SearchField';
 export { Segmented } from './Segmented';
 export { Text } from './Text';
 export { colors, fonts, radius, space, type } from './theme';

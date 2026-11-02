@@ -6,7 +6,7 @@ import { useBoard } from '@/api/hooks';
 import type { BoardEntry, Period, Scope } from '@/api/types';
 import { useSession } from '@/auth/session';
 import { count, hours, periodOptions, periodPhrase } from '@/features/format';
-import { Avatar, Field, Notice, Screen, Segmented, Text, colors, radius, space } from '@/ui';
+import { Avatar, Notice, Screen, SearchField, Segmented, Text, colors, radius, space } from '@/ui';
 
 const scopes: { value: Scope; label: string }[] = [
   { value: 'following', label: 'Friends' },
@@ -26,11 +26,11 @@ export default function Boards() {
       <View style={styles.filters}>
         <Segmented label="Who to compare" options={scopes} value={scope} onChange={setScope} />
         <Segmented label="Time range" options={periodOptions} value={period} onChange={setPeriod} />
-        <Field
-          label="Artist (optional)"
+        <SearchField
           value={artist}
           onChangeText={setArtist}
-          placeholder="Who listens to Ghost the most?"
+          placeholder="Filter by artist"
+          accessibilityLabel="Filter the leaderboard by artist"
           autoCapitalize="words"
         />
       </View>
@@ -88,18 +88,16 @@ function Row({ entry, isSelf }: { entry: BoardEntry; isSelf: boolean }) {
 
 const styles = StyleSheet.create({
   filters: { gap: space.md },
-  list: { gap: space.sm },
+  list: { gap: space.xs },
   row: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: space.md,
-    backgroundColor: colors.surface,
     borderRadius: radius.md,
-    borderWidth: 1,
-    borderColor: colors.line,
-    padding: space.md,
+    paddingVertical: space.md,
+    paddingHorizontal: space.sm,
   },
-  leader: { backgroundColor: colors.raised, borderColor: colors.highlight },
-  self: { borderColor: colors.accent },
+  leader: { backgroundColor: colors.raised },
+  self: { backgroundColor: colors.surface },
   rank: { width: 36, textAlign: 'center' },
 });
