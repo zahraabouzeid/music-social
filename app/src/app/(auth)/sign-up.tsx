@@ -13,10 +13,7 @@ export default function SignUp() {
   const update = (key: keyof typeof form) => (value: string) => setForm((current) => ({ ...current, [key]: value }));
 
   return (
-    <AuthLayout
-      title="Create your account"
-      intro="Bring your listening history and find people who hear things the way you do."
-    >
+    <AuthLayout title="Join in" intro="Bring your listening history and find people who hear things the way you do.">
       {error ? <Notice tone="error" title="Could not create the account" body={error} /> : null}
       <Field label="Name" value={form.display_name} onChangeText={update('display_name')} autoComplete="name" />
       <Field
