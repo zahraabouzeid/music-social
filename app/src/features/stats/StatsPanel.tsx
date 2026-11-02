@@ -1,9 +1,10 @@
 import { useState } from 'react';
+import { Link } from 'expo-router';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
 
 import { useStats } from '@/api/hooks';
 import type { Period } from '@/api/types';
-import { Notice, Segmented, Text, colors, space } from '@/ui';
+import { Button, Notice, Segmented, Text, colors, space } from '@/ui';
 
 import { count, hours, periodOptions, periodPhrase } from '../format';
 import { RankedList } from './RankedList';
@@ -20,7 +21,14 @@ export function StatsPanel({ username, isSelf }: { username: string; isSelf: boo
       {data && data.totals.plays === 0 ? (
         <Notice
           title={`No plays in ${periodPhrase(period)}`}
-          body={isSelf ? 'Import your history or connect a service from the You tab to fill this in.' : undefined}
+          body={isSelf ? 'Import your listening history or connect a service to fill this in.' : undefined}
+          action={
+            isSelf ? (
+              <Link href="/connections" asChild>
+                <Button label="Add your music" tone="ink" compact onPress={() => undefined} />
+              </Link>
+            ) : undefined
+          }
         />
       ) : null}
       {data && data.totals.plays > 0 ? (
