@@ -5,6 +5,7 @@ import { Pressable, StyleSheet, View } from 'react-native';
 import { useBoard } from '@/api/hooks';
 import type { BoardEntry, Period, Scope } from '@/api/types';
 import { useSession } from '@/auth/session';
+import { Podium } from '@/features/boards/Podium';
 import { count, hours, periodOptions, periodPhrase } from '@/features/format';
 import {
   Avatar,
@@ -66,8 +67,11 @@ export default function Boards() {
           body={scope === 'following' ? 'Follow people or switch to Everyone.' : 'Nobody has plays in this range yet.'}
         />
       ) : null}
+      {board.data && board.data.entries.length > 0 ? (
+        <Podium entries={board.data.entries.slice(0, 3)} selfUsername={user?.username} />
+      ) : null}
       <View style={styles.list}>
-        {board.data?.entries.map((entry) => (
+        {board.data?.entries.slice(3).map((entry) => (
           <Row key={entry.username} entry={entry} isSelf={entry.username === user?.username} />
         ))}
       </View>
@@ -76,14 +80,10 @@ export default function Boards() {
 }
 
 function Row({ entry, isSelf }: { entry: BoardEntry; isSelf: boolean }) {
-  const leader = entry.rank === 1;
   return (
     <Link href={`/u/${entry.username}`} asChild>
-      <Pressable
-        accessibilityRole="link"
-        style={StyleSheet.flatten([styles.row, leader && styles.leader, isSelf && !leader && styles.self])}
-      >
-        <Text variant="number" color={leader ? colors.highlight : colors.faint} style={styles.rank}>
+      <Pressable accessibilityRole="link" style={StyleSheet.flatten([styles.row, isSelf && styles.self])}>
+        <Text variant="heading" color={colors.muted} style={styles.rank}>
           {entry.rank}
         </Text>
         <Avatar name={entry.display_name} seed={entry.username} size={40} />
@@ -115,7 +115,6 @@ const styles = StyleSheet.create({
     paddingVertical: space.md,
     paddingHorizontal: space.sm,
   },
-  leader: { backgroundColor: colors.raised },
   self: { backgroundColor: colors.surface },
   rank: { width: 36, textAlign: 'center' },
 });
