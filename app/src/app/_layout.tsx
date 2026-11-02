@@ -13,6 +13,7 @@ import { useState } from 'react';
 import { ActivityIndicator, View } from 'react-native';
 
 import { SessionProvider, useSession } from '@/auth/session';
+import { LiveUpdates } from '@/realtime/LiveUpdates';
 import { colors, fonts } from '@/ui';
 
 export default function RootLayout() {
@@ -32,8 +33,10 @@ export default function RootLayout() {
   return (
     <QueryClientProvider client={queryClient}>
       <SessionProvider>
-        <StatusBar style="light" />
-        <Navigation />
+        <LiveUpdates>
+          <StatusBar style="light" />
+          <Navigation />
+        </LiveUpdates>
       </SessionProvider>
     </QueryClientProvider>
   );
