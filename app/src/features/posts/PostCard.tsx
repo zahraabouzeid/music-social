@@ -9,6 +9,13 @@ import { Avatar, Cover, Icon, LogoMark, Text, colors, pressedStyle, radius, spac
 
 import { ago, count, hours, periodPhrase } from '../format';
 
+function action(post: Post) {
+  if (post.kind === 'track') return 'shared a song';
+  if (post.kind === 'stats' && post.payload)
+    return `shared ${periodPhrase(post.payload.period).replace('the last', 'their last')}`;
+  return 'wrote';
+}
+
 export function PostCard({ post, canDelete = false }: { post: Post; canDelete?: boolean }) {
   const like = useLike();
   const remove = useDeletePost();
@@ -30,8 +37,8 @@ export function PostCard({ post, canDelete = false }: { post: Post; canDelete?: 
         <Pressable accessibilityRole="link" style={pressedStyle(styles.author)}>
           <Avatar name={post.author.display_name} seed={post.author.username} size={36} />
           <View style={{ flex: 1 }}>
-            <Text variant="bodyStrong" numberOfLines={1}>
-              {post.author.display_name}
+            <Text numberOfLines={1} color={colors.muted}>
+              <Text variant="bodyStrong">{post.author.display_name}</Text> {action(post)}
             </Text>
             <Text variant="small" color={colors.muted}>
               {ago(post.created_at)}
