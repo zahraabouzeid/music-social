@@ -9,12 +9,13 @@ type Props = {
   refreshing?: boolean;
   onRefresh?: () => void;
   scroll?: boolean;
+  insetTop?: boolean;
 };
 
-export function Screen({ children, refreshing = false, onRefresh, scroll = true }: Props) {
+export function Screen({ children, refreshing = false, onRefresh, scroll = true, insetTop = true }: Props) {
   const body = <View style={styles.column}>{children}</View>;
   return (
-    <SafeAreaView style={styles.safe} edges={['top']}>
+    <SafeAreaView style={styles.safe} edges={insetTop ? ['top'] : []}>
       {scroll ? (
         <ScrollView
           contentContainerStyle={styles.scroll}

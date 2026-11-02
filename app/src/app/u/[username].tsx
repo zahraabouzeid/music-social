@@ -7,7 +7,7 @@ export default function UserProfile() {
   return (
     <>
       <Stack.Screen options={{ title: `@${username}` }} />
-      <ProfileView username={username} />
+      <ProfileView username={username} insetTop={false} />
     </>
   );
 }

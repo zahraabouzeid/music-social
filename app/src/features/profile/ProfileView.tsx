@@ -7,7 +7,7 @@ import { PostCard } from '../posts/PostCard';
 import { StatsPanel } from '../stats/StatsPanel';
 import { ProfileHeader } from './ProfileHeader';
 
-export function ProfileView({ username }: { username: string }) {
+export function ProfileView({ username, insetTop = true }: { username: string; insetTop?: boolean }) {
   const profile = useProfile(username);
   const posts = useUserPosts(username);
 
@@ -17,7 +17,7 @@ export function ProfileView({ username }: { username: string }) {
   };
 
   return (
-    <Screen refreshing={profile.isRefetching} onRefresh={refresh}>
+    <Screen refreshing={profile.isRefetching} onRefresh={refresh} insetTop={insetTop}>
       {profile.isLoading ? <ActivityIndicator color={colors.red} /> : null}
       {profile.error ? <Notice tone="error" title="This profile could not load" body={profile.error.message} /> : null}
       {profile.data ? (
