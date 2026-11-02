@@ -2,7 +2,7 @@ import { Link } from 'expo-router';
 import { Pressable, StyleSheet, View } from 'react-native';
 
 import type { BoardEntry } from '@/api/types';
-import { Avatar, Text, colors, radius, space } from '@/ui';
+import { Avatar, Text, colors, pressedStyle, radius, space } from '@/ui';
 
 import { hours } from '../format';
 
@@ -33,7 +33,7 @@ function Place({ entry, place, isSelf }: { entry: BoardEntry; place: number; isS
   const winner = place === 0;
   return (
     <Link href={`/u/${entry.username}`} asChild>
-      <Pressable accessibilityRole="link" style={styles.column}>
+      <Pressable accessibilityRole="link" style={pressedStyle(styles.column)}>
         <View style={[styles.ring, winner && styles.winnerRing]}>
           <Avatar name={entry.display_name} seed={entry.username} size={winner ? 72 : 56} />
         </View>

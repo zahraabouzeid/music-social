@@ -2,7 +2,7 @@ import { Link } from 'expo-router';
 import { ReactNode } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 
-import { Avatar, Text, colors, space } from '@/ui';
+import { Avatar, Text, colors, pressedStyle, space } from '@/ui';
 
 type Props = {
   username: string;
@@ -15,7 +15,7 @@ export function UserRow({ username, displayName, detail, trailing }: Props) {
   return (
     <View style={styles.row}>
       <Link href={`/u/${username}`} asChild>
-        <Pressable accessibilityRole="link" style={styles.identity}>
+        <Pressable accessibilityRole="link" style={pressedStyle(styles.identity)}>
           <Avatar name={displayName} seed={username} size={44} />
           <View style={{ flex: 1 }}>
             <Text variant="bodyStrong" numberOfLines={1}>

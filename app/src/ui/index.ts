@@ -12,6 +12,7 @@ export type { IconName } from './Icon';
 export { LogoMark, Wordmark } from './Logo';
 export { MeetingWave } from './MeetingWave';
 export { Notice } from './Notice';
+export { pressedStyle } from './pressable';
 export { Screen } from './Screen';
 export { SearchField } from './SearchField';
 export { Segmented } from './Segmented';

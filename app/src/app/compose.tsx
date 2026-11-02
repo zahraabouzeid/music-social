@@ -16,6 +16,7 @@ import {
   Skeleton,
   Text,
   colors,
+  pressedStyle,
   radius,
   space,
 } from '@/ui';
@@ -79,7 +80,7 @@ export default function Compose() {
                 accessibilityRole="radio"
                 accessibilityState={{ selected }}
                 onPress={() => setTrackId(play.track_id)}
-                style={[styles.song, selected && styles.songSelected]}
+                style={pressedStyle(styles.song, selected && styles.songSelected)}
               >
                 <Cover seed={`${play.artist}|${play.title}`} style={styles.thumb} />
                 <View style={{ flex: 1 }}>
