@@ -1,4 +1,4 @@
-import { Pressable, StyleSheet, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet } from 'react-native';
 
 import { Text } from './Text';
 import { colors, radius, space } from './theme';
@@ -14,7 +14,13 @@ type Props<T extends string> = {
 
 export function Segmented<T extends string>({ options, value, onChange, label }: Props<T>) {
   return (
-    <View accessibilityRole="radiogroup" accessibilityLabel={label} style={styles.row}>
+    <ScrollView
+      horizontal
+      showsHorizontalScrollIndicator={false}
+      accessibilityRole="radiogroup"
+      accessibilityLabel={label}
+      contentContainerStyle={styles.row}
+    >
       {options.map((option) => {
         const active = option.value === value;
         return (
@@ -23,28 +29,25 @@ export function Segmented<T extends string>({ options, value, onChange, label }:
             accessibilityRole="radio"
             accessibilityState={{ selected: active }}
             onPress={() => onChange(option.value)}
-            style={[styles.option, active && styles.active]}
+            style={[styles.chip, active && styles.active]}
           >
-            <Text variant="small" color={active ? colors.bg : colors.muted}>
+            <Text variant="small" color={active ? colors.onAccent : colors.text}>
               {option.label}
             </Text>
           </Pressable>
         );
       })}
-    </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  row: {
-    flexDirection: 'row',
-    backgroundColor: colors.surface,
+  row: { gap: space.sm },
+  chip: {
+    paddingVertical: space.sm - 1,
+    paddingHorizontal: space.lg - 2,
     borderRadius: radius.pill,
-    borderWidth: 1,
-    borderColor: colors.line,
-    padding: 3,
-    alignSelf: 'flex-start',
+    backgroundColor: colors.raised,
   },
-  option: { paddingVertical: space.xs + 2, paddingHorizontal: space.md, borderRadius: radius.pill },
-  active: { backgroundColor: colors.text },
+  active: { backgroundColor: colors.accent },
 });

@@ -6,6 +6,7 @@ export { Cover } from './Cover';
 export { Divider } from './Divider';
 export { Field } from './Field';
 export { Icon } from './Icon';
+export { IconButton } from './IconButton';
 export type { IconName } from './Icon';
 export { LogoMark, Wordmark } from './Logo';
 export { MeetingWave } from './MeetingWave';

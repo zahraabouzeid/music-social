@@ -33,7 +33,7 @@ export function Screen({ children, refreshing = false, onRefresh, scroll = true,
 
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.bg },
-  scroll: { flexGrow: 1, paddingBottom: space.xxl },
+  scroll: { flexGrow: 1, paddingBottom: 96 },
   column: {
     width: '100%',
     maxWidth: contentWidth,
