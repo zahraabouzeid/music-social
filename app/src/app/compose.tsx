@@ -1,11 +1,24 @@
 import { router } from 'expo-router';
 import { useState } from 'react';
-import { ActivityIndicator, Pressable, StyleSheet, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 
 import { useCreatePost, useRecentPlays } from '@/api/hooks';
 import type { NewPost, Period } from '@/api/types';
 import { periodOptions, periodPhrase } from '@/features/format';
-import { Button, Cover, Field, Notice, Screen, Segmented, Text, colors, radius, space } from '@/ui';
+import {
+  Button,
+  Cover,
+  Field,
+  Notice,
+  RowSkeleton,
+  Screen,
+  Segmented,
+  Skeleton,
+  Text,
+  colors,
+  radius,
+  space,
+} from '@/ui';
 
 type Kind = NewPost['kind'];
 
@@ -48,7 +61,13 @@ export default function Compose() {
       {kind === 'track' ? (
         <View style={styles.list}>
           <Text variant="heading">Pick one of your recent songs</Text>
-          {plays.isLoading ? <ActivityIndicator color={colors.accent} /> : null}
+          {plays.isLoading ? (
+            <Skeleton label="Loading your songs">
+              <RowSkeleton />
+              <RowSkeleton />
+              <RowSkeleton />
+            </Skeleton>
+          ) : null}
           {uniquePlays.length === 0 && !plays.isLoading ? (
             <Notice title="No plays yet" body="Import your history or connect a service, then share what you hear." />
           ) : null}

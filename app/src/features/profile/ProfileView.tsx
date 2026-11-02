@@ -1,7 +1,7 @@
-import { ActivityIndicator, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
 import { useProfile, useUserPosts } from '@/api/hooks';
-import { Notice, Screen, Text, colors, space } from '@/ui';
+import { Block, Notice, Screen, Skeleton, Text, colors, space } from '@/ui';
 
 import { PostList } from '../posts/PostList';
 import { StatsPanel } from '../stats/StatsPanel';
@@ -18,7 +18,13 @@ export function ProfileView({ username, underHeader = false }: { username: strin
 
   return (
     <Screen refreshing={profile.isRefetching} onRefresh={refresh}>
-      {profile.isLoading ? <ActivityIndicator color={colors.accent} /> : null}
+      {profile.isLoading ? (
+        <Skeleton label="Loading the profile">
+          <Block style={{ width: 104, height: 104, borderRadius: 52, marginTop: 72 }} />
+          <Block style={{ width: '60%', height: 40 }} />
+          <Block style={{ width: '40%', height: 16 }} />
+        </Skeleton>
+      ) : null}
       {profile.error ? <Notice tone="error" title="This profile could not load" body={profile.error.message} /> : null}
       {profile.data ? (
         <>
