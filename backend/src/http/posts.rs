@@ -4,9 +4,7 @@ use axum::{
     http::StatusCode,
     routing::{get, post},
 };
-use chrono::Utc;
 use serde::Deserialize;
-use serde_json::json;
 use uuid::Uuid;
 
 use super::auth::{CurrentUser, MaybeUser};
@@ -18,10 +16,9 @@ use crate::{
         posts::{self, NewPost, PostView},
         taste,
     },
-    stats::{Period, repo as stats},
+    stats::{self, Period},
 };
 
-const STATS_SHARE_SIZE: usize = 5;
 const TASTE_POOL: i64 = 500;
 
 pub fn routes() -> Router<AppState> {
@@ -61,25 +58,10 @@ async fn create(
             track_id,
             caption: caption_text(&caption)?,
         },
-        CreatePost::Stats { period, caption } => {
-            let overview =
-                stats::overview(&state.db, current.user.id, period.start(Utc::now())).await?;
-            if overview.totals.plays == 0 {
-                return Err(AppError::BadRequest(
-                    "there are no plays in this period yet".into(),
-                ));
-            }
-            let payload = json!({
-                "period": period,
-                "totals": overview.totals,
-                "top_artists": overview.top_artists.iter().take(STATS_SHARE_SIZE).collect::<Vec<_>>(),
-                "top_tracks": overview.top_tracks.iter().take(STATS_SHARE_SIZE).collect::<Vec<_>>(),
-            });
-            NewPost::Stats {
-                payload,
-                caption: caption_text(&caption)?,
-            }
-        }
+        CreatePost::Stats { period, caption } => NewPost::Stats {
+            payload: stats::snapshot(&state.db, current.user.id, period).await?,
+            caption: caption_text(&caption)?,
+        },
         CreatePost::Text { caption } => {
             let caption = caption_text(&caption)?;
             if caption.is_empty() {
