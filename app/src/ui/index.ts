@@ -2,6 +2,8 @@ export { Avatar } from './Avatar';
 export { Bars } from './Bars';
 export { Button } from './Button';
 export { Card } from './Card';
+export { Cover } from './Cover';
+export { Divider } from './Divider';
 export { Field } from './Field';
 export { Icon } from './Icon';
 export type { IconName } from './Icon';

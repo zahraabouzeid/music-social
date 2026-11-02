@@ -40,6 +40,7 @@ export const type = {
   hero: { fontFamily: fonts.display, fontSize: 40, lineHeight: 42, letterSpacing: -1 },
   title: { fontFamily: fonts.display, fontSize: 26, lineHeight: 30, letterSpacing: -0.5 },
   heading: { fontFamily: fonts.displayMedium, fontSize: 18, lineHeight: 24 },
+  lead: { fontFamily: fonts.body, fontSize: 19, lineHeight: 27 },
   body: { fontFamily: fonts.body, fontSize: 16, lineHeight: 23 },
   bodyStrong: { fontFamily: fonts.bodyBold, fontSize: 16, lineHeight: 23 },
   small: { fontFamily: fonts.bodyMedium, fontSize: 13, lineHeight: 18 },

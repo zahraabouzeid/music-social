@@ -3,7 +3,7 @@ import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import { useProfile, useUserPosts } from '@/api/hooks';
 import { Notice, Screen, Text, colors, space } from '@/ui';
 
-import { PostCard } from '../posts/PostCard';
+import { PostList } from '../posts/PostList';
 import { StatsPanel } from '../stats/StatsPanel';
 import { ProfileHeader } from './ProfileHeader';
 
@@ -31,9 +31,7 @@ export function ProfileView({ username, insetTop = true }: { username: string; i
                 {profile.data.is_self ? 'Share a song or your stats from the Feed tab.' : 'Nothing shared yet.'}
               </Text>
             ) : null}
-            {posts.data?.map((post) => (
-              <PostCard key={post.id} post={post} canDelete={profile.data.is_self} />
-            ))}
+            {posts.data ? <PostList posts={posts.data} canDelete={() => profile.data.is_self} /> : null}
           </View>
         </>
       ) : null}
