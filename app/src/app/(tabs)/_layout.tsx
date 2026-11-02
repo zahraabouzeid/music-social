@@ -1,10 +1,10 @@
-import { BlurView } from 'expo-blur';
 import { Tabs } from 'expo-router';
 import { StyleSheet, View } from 'react-native';
 
 import { useConversations } from '@/api/chat';
 import { useSession } from '@/auth/session';
-import { Avatar, Icon, IconName, colors, fonts } from '@/ui';
+import { GlassTabBar } from '@/features/navigation/GlassTabBar';
+import { Avatar, Icon, IconName, colors } from '@/ui';
 
 function TabIcon({ name, focused }: { name: IconName; focused: boolean }) {
   return <Icon name={name} filled={focused} color={focused ? colors.text : colors.muted} />;
@@ -16,13 +16,9 @@ export default function TabsLayout() {
   const unread = (conversations.data ?? []).reduce((total, conversation) => total + conversation.unread, 0);
   return (
     <Tabs
+      tabBar={(props) => <GlassTabBar {...props} />}
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: colors.text,
-        tabBarInactiveTintColor: colors.muted,
-        tabBarLabelStyle: { fontFamily: fonts.bodyMedium, fontSize: 11 },
-        tabBarStyle: { backgroundColor: 'rgba(11, 11, 12, 0.72)', borderTopWidth: 0, position: 'absolute' },
-        tabBarBackground: () => <BlurView tint="dark" intensity={60} style={StyleSheet.absoluteFill} />,
         sceneStyle: { backgroundColor: colors.bg },
       }}
     >
@@ -40,7 +36,6 @@ export default function TabsLayout() {
           title: 'Chats',
           tabBarIcon: ({ focused }) => <TabIcon name="chat" focused={focused} />,
           tabBarBadge: unread > 0 ? (unread > 99 ? '99+' : unread) : undefined,
-          tabBarBadgeStyle: { backgroundColor: colors.accent, color: colors.onAccent, fontFamily: fonts.bodyBold },
         }}
       />
       <Tabs.Screen
