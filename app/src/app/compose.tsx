@@ -5,7 +5,7 @@ import { ActivityIndicator, Pressable, StyleSheet, View } from 'react-native';
 import { useCreatePost, useRecentPlays } from '@/api/hooks';
 import type { NewPost, Period } from '@/api/types';
 import { periodOptions, periodPhrase } from '@/features/format';
-import { Button, Field, Notice, Screen, Segmented, Text, colors, radius, space } from '@/ui';
+import { Button, Cover, Field, Notice, Screen, Segmented, Text, colors, radius, space } from '@/ui';
 
 type Kind = NewPost['kind'];
 
@@ -62,12 +62,16 @@ export default function Compose() {
                 onPress={() => setTrackId(play.track_id)}
                 style={[styles.song, selected && styles.songSelected]}
               >
-                <Text variant="bodyStrong" color={selected ? colors.bg : colors.text} numberOfLines={1}>
-                  {play.title}
-                </Text>
-                <Text variant="small" color={selected ? colors.raised : colors.muted} numberOfLines={1}>
-                  {play.artist}
-                </Text>
+                <Cover seed={`${play.artist}|${play.title}`} style={styles.thumb} />
+                <View style={{ flex: 1 }}>
+                  <Text variant="bodyStrong" numberOfLines={1}>
+                    {play.title}
+                  </Text>
+                  <Text variant="small" color={colors.muted} numberOfLines={1}>
+                    {play.artist}
+                  </Text>
+                </View>
+                <View style={[styles.radio, selected && styles.radioOn]} />
               </Pressable>
             );
           })}
@@ -102,12 +106,14 @@ export default function Compose() {
 const styles = StyleSheet.create({
   list: { gap: space.sm },
   song: {
-    backgroundColor: colors.surface,
-    borderWidth: 1,
-    borderColor: colors.line,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: space.md,
     borderRadius: radius.md,
-    paddingHorizontal: space.lg,
-    paddingVertical: space.md,
+    padding: space.sm,
   },
-  songSelected: { backgroundColor: colors.text, borderColor: colors.text },
+  songSelected: { backgroundColor: colors.raised },
+  thumb: { width: 48, borderRadius: radius.sm },
+  radio: { width: 22, height: 22, borderRadius: 11, borderWidth: 2, borderColor: colors.faint },
+  radioOn: { borderColor: colors.accent, backgroundColor: colors.accent },
 });
