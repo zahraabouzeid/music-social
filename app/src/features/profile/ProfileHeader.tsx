@@ -1,16 +1,20 @@
-import { Link } from 'expo-router';
+import { Link, router } from 'expo-router';
 import { StyleSheet, View } from 'react-native';
 
+import { useOpenDirect, useUserNowPlaying } from '@/api/chat';
 import { useFollow, useMatch, useStats } from '@/api/hooks';
 import type { Profile } from '@/api/types';
 import Svg, { Defs, LinearGradient, Rect, Stop } from 'react-native-svg';
 
 import { Avatar, Bars, Button, Text, colors, radius, space, swatchFor } from '@/ui';
 
+import { Equalizer } from '../chat/NowPlayingStrip';
 import { count, dailySeries, listing, percent, plural } from '../format';
 
 export function ProfileHeader({ profile, underHeader = false }: { profile: Profile; underHeader?: boolean }) {
   const follow = useFollow(profile.username);
+  const openDirect = useOpenDirect();
+  const nowPlaying = useUserNowPlaying(profile.username);
   const month = useStats(profile.username, 'month');
   const match = useMatch(profile.username, !profile.is_self);
   const series = dailySeries(month.data?.daily ?? [], 30);
@@ -35,6 +39,14 @@ export function ProfileHeader({ profile, underHeader = false }: { profile: Profi
           </Text>
           <Text color={colors.muted}>@{profile.username}</Text>
         </View>
+        {nowPlaying.data ? (
+          <View style={styles.listening}>
+            <Equalizer />
+            <Text variant="small" numberOfLines={1} style={{ flex: 1 }}>
+              Listening to {nowPlaying.data.title} by {nowPlaying.data.artist}
+            </Text>
+          </View>
+        ) : null}
       </View>
 
       {profile.bio ? <Text>{profile.bio}</Text> : null}
@@ -51,13 +63,27 @@ export function ProfileHeader({ profile, underHeader = false }: { profile: Profi
             <Button label="Edit profile" icon="settings" tone="quiet" compact onPress={() => undefined} />
           </Link>
         ) : (
-          <Button
-            label={profile.is_following ? 'Following' : 'Follow'}
-            tone={profile.is_following ? 'quiet' : 'primary'}
-            compact
-            busy={follow.isPending}
-            onPress={() => follow.mutate(!profile.is_following)}
-          />
+          <>
+            <Button
+              label={profile.is_following ? 'Following' : 'Follow'}
+              tone={profile.is_following ? 'quiet' : 'primary'}
+              compact
+              busy={follow.isPending}
+              onPress={() => follow.mutate(!profile.is_following)}
+            />
+            <Button
+              label="Message"
+              icon="chat"
+              tone="quiet"
+              compact
+              busy={openDirect.isPending}
+              onPress={() =>
+                openDirect.mutate(profile.username, {
+                  onSuccess: (conversation) => router.push(`/chats/${conversation.id}`),
+                })
+              }
+            />
+          </>
         )}
       </View>
 
@@ -107,6 +133,17 @@ const styles = StyleSheet.create({
   },
   heroUnderHeader: { paddingTop: 72 },
   names: { gap: space.xs },
+  listening: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: space.sm,
+    alignSelf: 'flex-start',
+    backgroundColor: 'rgba(0, 0, 0, 0.35)',
+    borderRadius: radius.pill,
+    paddingVertical: space.xs + 2,
+    paddingHorizontal: space.md,
+    maxWidth: '100%',
+  },
   actions: { flexDirection: 'row', gap: space.sm },
   counts: { flexDirection: 'row', flexWrap: 'wrap', columnGap: space.xl, rowGap: space.xs },
   match: {
