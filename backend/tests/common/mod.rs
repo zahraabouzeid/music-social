@@ -22,10 +22,10 @@ pub struct Reply {
 
 impl TestApp {
     pub fn new(db: PgPool) -> Self {
-        let config = Config {
-            database_url: String::new(),
-            bind_addr: "127.0.0.1:0".parse().unwrap(),
-        };
+        Self::with_config(db, Config::for_tests())
+    }
+
+    pub fn with_config(db: PgPool, config: Config) -> Self {
         Self {
             router: app::router(app::AppState::new(db, config)),
         }

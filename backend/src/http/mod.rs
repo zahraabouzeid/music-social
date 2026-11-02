@@ -4,6 +4,7 @@ use crate::app::AppState;
 
 mod accounts;
 pub mod auth;
+mod connections;
 mod health;
 mod listening;
 
@@ -12,4 +13,5 @@ pub fn routes() -> Router<AppState> {
         .merge(health::routes())
         .merge(accounts::routes())
         .merge(listening::routes())
+        .merge(connections::routes())
 }
