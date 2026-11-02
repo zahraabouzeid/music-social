@@ -5,6 +5,7 @@ use axum::{
     body::Body,
     http::{Method, Request, StatusCode, header},
 };
+use chrono::{Duration, Utc};
 use http_body_util::BodyExt;
 use music_social::{app, config::Config};
 use serde_json::{Value, json};
@@ -95,4 +96,20 @@ impl TestApp {
         assert_eq!(reply.status, StatusCode::CREATED, "{}", reply.body);
         reply.body["token"].as_str().unwrap().to_string()
     }
+}
+
+pub fn spotify_export(entries: &[(&str, &str, &str, i64)]) -> Vec<u8> {
+    let rows: Vec<Value> = entries
+        .iter()
+        .map(|(artist, title, album, days_ago)| {
+            json!({
+                "ts": (Utc::now() - Duration::days(*days_ago) - Duration::minutes(title.len() as i64)).to_rfc3339(),
+                "ms_played": 180000,
+                "master_metadata_track_name": title,
+                "master_metadata_album_artist_name": artist,
+                "master_metadata_album_album_name": album,
+            })
+        })
+        .collect();
+    serde_json::to_vec(&rows).unwrap()
 }

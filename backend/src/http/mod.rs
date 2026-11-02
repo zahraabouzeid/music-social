@@ -7,6 +7,7 @@ pub mod auth;
 mod connections;
 mod health;
 mod listening;
+mod stats;
 
 pub fn routes() -> Router<AppState> {
     Router::new()
@@ -14,4 +15,5 @@ pub fn routes() -> Router<AppState> {
         .merge(accounts::routes())
         .merge(listening::routes())
         .merge(connections::routes())
+        .merge(stats::routes())
 }
