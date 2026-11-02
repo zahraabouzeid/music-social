@@ -45,7 +45,7 @@ export default function SignUp() {
       />
       <Button label="Create account" busy={busy} onPress={() => run(() => signUp(form))} />
       <Link href="/sign-in" asChild>
-        <Text variant="bodyStrong" color={colors.red} accessibilityRole="link">
+        <Text variant="bodyStrong" color={colors.accent} accessibilityRole="link">
           Already have an account? Sign in
         </Text>
       </Link>

@@ -3,7 +3,7 @@ import { StyleSheet, View } from 'react-native';
 import { Text } from './Text';
 import { colors, fonts } from './theme';
 
-const swatches = [colors.red, '#7A4FD6', '#1F7A6B', '#C2410C', '#3A5BD9'];
+const swatches = [colors.accent, '#7A4FD6', '#1F7A6B', '#C2410C', '#3A5BD9'];
 
 function swatchFor(seed: string) {
   let hash = 0;
@@ -24,7 +24,7 @@ export function Avatar({ name, seed, size = 40 }: Props) {
       accessibilityElementsHidden
       style={[styles.circle, { width: size, height: size, borderRadius: size / 2, backgroundColor: swatchFor(seed) }]}
     >
-      <Text style={{ fontFamily: fonts.display, fontSize: size * 0.45, lineHeight: size * 0.55 }} color={colors.onInk}>
+      <Text style={{ fontFamily: fonts.display, fontSize: size * 0.45, lineHeight: size * 0.55 }} color={colors.text}>
         {initial}
       </Text>
     </View>

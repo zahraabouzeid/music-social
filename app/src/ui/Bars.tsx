@@ -10,7 +10,7 @@ type Props = {
   baseColor?: string;
 };
 
-export function Bars({ values, height, label, peakColor = colors.yellow, baseColor = colors.red }: Props) {
+export function Bars({ values, height, label, peakColor = colors.highlight, baseColor = colors.accent }: Props) {
   const max = Math.max(1, ...values);
   const peak = values.indexOf(max);
   return (

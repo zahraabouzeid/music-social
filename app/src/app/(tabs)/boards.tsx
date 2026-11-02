@@ -40,7 +40,7 @@ export default function Boards() {
         {artist.trim() ? ` for ${artist.trim()}` : ''}.
       </Text>
 
-      {board.isLoading ? <ActivityIndicator color={colors.red} /> : null}
+      {board.isLoading ? <ActivityIndicator color={colors.accent} /> : null}
       {board.error ? <Notice tone="error" title="The leaderboard could not load" body={board.error.message} /> : null}
       {board.data?.entries.length === 0 ? (
         <Notice
@@ -65,20 +65,20 @@ function Row({ entry, isSelf }: { entry: BoardEntry; isSelf: boolean }) {
         accessibilityRole="link"
         style={StyleSheet.flatten([styles.row, leader && styles.leader, isSelf && !leader && styles.self])}
       >
-        <Text variant="number" color={leader ? colors.yellow : colors.muted} style={styles.rank}>
+        <Text variant="number" color={leader ? colors.highlight : colors.faint} style={styles.rank}>
           {entry.rank}
         </Text>
         <Avatar name={entry.display_name} seed={entry.username} size={40} />
         <View style={{ flex: 1 }}>
-          <Text variant="bodyStrong" color={leader ? colors.onInk : colors.ink} numberOfLines={1}>
+          <Text variant="bodyStrong" color={colors.text} numberOfLines={1}>
             {entry.display_name}
             {isSelf ? ' (you)' : ''}
           </Text>
-          <Text variant="small" color={leader ? colors.onInkMuted : colors.muted}>
+          <Text variant="small" color={colors.muted}>
             {count(entry.plays)} plays
           </Text>
         </View>
-        <Text variant="heading" color={leader ? colors.onInk : colors.ink}>
+        <Text variant="heading" color={colors.text}>
           {hours(entry.minutes)}
         </Text>
       </Pressable>
@@ -93,13 +93,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: space.md,
-    backgroundColor: colors.card,
+    backgroundColor: colors.surface,
     borderRadius: radius.md,
     borderWidth: 1,
     borderColor: colors.line,
     padding: space.md,
   },
-  leader: { backgroundColor: colors.ink, borderColor: colors.ink },
-  self: { borderColor: colors.red, borderWidth: 1.5 },
+  leader: { backgroundColor: colors.raised, borderColor: colors.highlight },
+  self: { borderColor: colors.accent },
   rank: { width: 36, textAlign: 'center' },
 });

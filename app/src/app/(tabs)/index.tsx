@@ -20,7 +20,7 @@ export default function Feed() {
           <Button label="Share" compact onPress={() => undefined} />
         </Link>
       </View>
-      {feed.isLoading ? <ActivityIndicator color={colors.red} /> : null}
+      {feed.isLoading ? <ActivityIndicator color={colors.accent} /> : null}
       {feed.error ? <Notice tone="error" title="The feed could not load" body={feed.error.message} /> : null}
       {feed.data?.length === 0 ? (
         <Notice
@@ -28,7 +28,7 @@ export default function Feed() {
           body="Follow people with similar taste and their songs and stats show up here."
           action={
             <Link href="/discover" asChild>
-              <Button label="Find people" tone="ink" compact onPress={() => undefined} />
+              <Button label="Find people" tone="secondary" compact onPress={() => undefined} />
             </Link>
           }
         />

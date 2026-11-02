@@ -60,10 +60,10 @@ export default function Connections() {
           Request your data from Spotify (Extended streaming history) or Apple (privacy.apple.com), then pick the JSON
           or CSV files here. Plays you already have are skipped.
         </Text>
-        <Button label="Choose files" tone="ink" busy={upload.busy} onPress={startImport} />
-        {upload.error ? <Text color={colors.red}>{upload.error}</Text> : null}
+        <Button label="Choose files" tone="secondary" busy={upload.busy} onPress={startImport} />
+        {upload.error ? <Text color={colors.accent}>{upload.error}</Text> : null}
         {results.map((result, index) => (
-          <Text key={`${result.name}-${index}`} variant="small" color={result.error ? colors.red : colors.ink}>
+          <Text key={`${result.name}-${index}`} variant="small" color={result.error ? colors.accent : colors.text}>
             {result.name}:{' '}
             {result.record
               ? `${count(result.record.plays_added)} new of ${count(result.record.plays_found)} plays from ${serviceNames[result.record.service]}`
@@ -102,7 +102,7 @@ function ConnectionStatus({ connection }: { connection: Connection }) {
         Connected as {connection.external_id}
         {connection.last_synced_at ? `, synced ${ago(connection.last_synced_at)}` : ', first sync pending'}.
       </Text>
-      {connection.last_error ? <Text color={colors.red}>Last sync failed: {connection.last_error}</Text> : null}
+      {connection.last_error ? <Text color={colors.accent}>Last sync failed: {connection.last_error}</Text> : null}
     </>
   );
 }
@@ -137,7 +137,7 @@ function ConnectedActions({ service }: { service: Service }) {
           }
         />
       </View>
-      {error ? <Text color={colors.red}>{error}</Text> : null}
+      {error ? <Text color={colors.accent}>{error}</Text> : null}
     </>
   );
 }
@@ -162,7 +162,7 @@ function LastfmCard({ connection }: { connection?: Connection }) {
           <Field label="Last.fm username" value={username} onChangeText={setUsername} autoCapitalize="none" />
           <Button
             label="Connect Last.fm"
-            tone="ink"
+            tone="secondary"
             busy={busy}
             disabled={!username.trim()}
             onPress={() =>
@@ -173,7 +173,7 @@ function LastfmCard({ connection }: { connection?: Connection }) {
               })
             }
           />
-          {error ? <Text color={colors.red}>{error}</Text> : null}
+          {error ? <Text color={colors.accent}>{error}</Text> : null}
         </>
       )}
     </Card>
@@ -202,8 +202,8 @@ function SpotifyCard({ connection }: { connection?: Connection }) {
       ) : (
         <>
           <Text color={colors.muted}>Picks up what you play on Spotify every few minutes.</Text>
-          <Button label="Connect Spotify" tone="ink" busy={busy} onPress={connect} />
-          {error ? <Text color={colors.red}>{error}</Text> : null}
+          <Button label="Connect Spotify" tone="secondary" busy={busy} onPress={connect} />
+          {error ? <Text color={colors.accent}>{error}</Text> : null}
         </>
       )}
     </Card>

@@ -30,11 +30,11 @@ const styles = StyleSheet.create({
     borderRadius: radius.md,
     borderWidth: 1.5,
     borderColor: colors.line,
-    backgroundColor: colors.card,
+    backgroundColor: colors.surface,
     paddingHorizontal: space.lg,
     fontFamily: fonts.body,
     fontSize: 16,
-    color: colors.ink,
+    color: colors.text,
   },
   multiline: { minHeight: 96, paddingTop: space.md, textAlignVertical: 'top' },
 });

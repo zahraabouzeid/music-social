@@ -19,23 +19,23 @@ export function ProfileHeader({ profile }: { profile: Profile }) {
       <View style={styles.identity}>
         <Avatar name={profile.display_name} seed={profile.username} size={64} />
         <View style={{ flex: 1 }}>
-          <Text variant="title" color={colors.onInk} numberOfLines={2}>
+          <Text variant="title" color={colors.text} numberOfLines={2}>
             {profile.display_name}
           </Text>
-          <Text color={colors.onInkMuted}>@{profile.username}</Text>
+          <Text color={colors.muted}>@{profile.username}</Text>
         </View>
       </View>
 
-      {profile.bio ? <Text color={colors.onInk}>{profile.bio}</Text> : null}
+      {profile.bio ? <Text color={colors.text}>{profile.bio}</Text> : null}
 
       <View style={styles.wave}>
         <Bars
           values={series}
           height={64}
           label={`Plays per day over the last 30 days, up to ${busiest} on the busiest day`}
-          baseColor={colors.red}
+          baseColor={colors.accent}
         />
-        <Text variant="small" color={colors.onInkMuted}>
+        <Text variant="small" color={colors.muted}>
           Last 30 days{busiest > 0 ? `, busiest day ${busiest} plays` : ''}
         </Text>
       </View>
@@ -47,8 +47,8 @@ export function ProfileHeader({ profile }: { profile: Profile }) {
       </View>
 
       {!profile.is_self && match.data && match.data.similarity > 0 ? (
-        <Text color={colors.onInk}>
-          <Text variant="bodyStrong" color={colors.yellow}>
+        <Text color={colors.text}>
+          <Text variant="bodyStrong" color={colors.highlight}>
             {percent(match.data.similarity)} taste match.
           </Text>{' '}
           You both play {listing(match.data.shared_artists.slice(0, 3))}.
@@ -57,12 +57,12 @@ export function ProfileHeader({ profile }: { profile: Profile }) {
 
       {profile.is_self ? (
         <Link href="/settings" asChild>
-          <Button label="Edit profile" tone="onInk" compact onPress={() => undefined} />
+          <Button label="Edit profile" tone="quiet" compact onPress={() => undefined} />
         </Link>
       ) : (
         <Button
           label={profile.is_following ? 'Following' : 'Follow'}
-          tone={profile.is_following ? 'onInk' : 'primary'}
+          tone={profile.is_following ? 'quiet' : 'primary'}
           compact
           busy={follow.isPending}
           onPress={() => follow.mutate(!profile.is_following)}
@@ -75,10 +75,10 @@ export function ProfileHeader({ profile }: { profile: Profile }) {
 function Count({ value, label }: { value: number; label: string }) {
   return (
     <View style={{ flex: 1 }}>
-      <Text variant="number" color={colors.onInk}>
+      <Text variant="number" color={colors.text}>
         {count(value)}
       </Text>
-      <Text variant="small" color={colors.onInkMuted}>
+      <Text variant="small" color={colors.muted}>
         {label}
       </Text>
     </View>
@@ -86,7 +86,7 @@ function Count({ value, label }: { value: number; label: string }) {
 }
 
 const styles = StyleSheet.create({
-  block: { backgroundColor: colors.ink, borderRadius: radius.md + 8, padding: space.xl, gap: space.lg },
+  block: { backgroundColor: colors.raised, borderRadius: radius.md + 8, padding: space.xl, gap: space.lg },
   identity: { flexDirection: 'row', alignItems: 'center', gap: space.lg },
   wave: { gap: space.sm },
   counts: { flexDirection: 'row' },

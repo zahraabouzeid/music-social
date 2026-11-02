@@ -9,6 +9,6 @@ type Props = TextProps & {
   color?: string;
 };
 
-export function Text({ variant = 'body', color = colors.ink, style, ...rest }: Props) {
+export function Text({ variant = 'body', color = colors.text, style, ...rest }: Props) {
   return <RNText {...rest} style={[type[variant], { color }, style]} />;
 }

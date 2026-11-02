@@ -9,7 +9,7 @@ export function Card({ children, style }: { children: ReactNode; style?: ViewSty
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: colors.card,
+    backgroundColor: colors.surface,
     borderRadius: radius.md,
     borderWidth: 1,
     borderColor: colors.line,

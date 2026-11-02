@@ -32,7 +32,7 @@ export function Screen({ children, refreshing = false, onRefresh, scroll = true,
 }
 
 const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: colors.paper },
+  safe: { flex: 1, backgroundColor: colors.bg },
   scroll: { flexGrow: 1, paddingBottom: space.xxl },
   column: {
     width: '100%',

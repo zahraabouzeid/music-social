@@ -25,7 +25,7 @@ export function Segmented<T extends string>({ options, value, onChange, label }:
             onPress={() => onChange(option.value)}
             style={[styles.option, active && styles.active]}
           >
-            <Text variant="small" color={active ? colors.onInk : colors.ink}>
+            <Text variant="small" color={active ? colors.bg : colors.muted}>
               {option.label}
             </Text>
           </Pressable>
@@ -38,7 +38,7 @@ export function Segmented<T extends string>({ options, value, onChange, label }:
 const styles = StyleSheet.create({
   row: {
     flexDirection: 'row',
-    backgroundColor: colors.card,
+    backgroundColor: colors.surface,
     borderRadius: radius.pill,
     borderWidth: 1,
     borderColor: colors.line,
@@ -46,5 +46,5 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-start',
   },
   option: { paddingVertical: space.xs + 2, paddingHorizontal: space.md, borderRadius: radius.pill },
-  active: { backgroundColor: colors.ink },
+  active: { backgroundColor: colors.text },
 });
