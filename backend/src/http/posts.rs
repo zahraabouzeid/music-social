@@ -1,5 +1,3 @@
-use std::collections::HashMap;
-
 use axum::{
     Json, Router,
     extract::{Path, State},
@@ -16,11 +14,15 @@ use crate::{
     accounts::repo as accounts,
     app::AppState,
     error::{AppError, AppResult},
-    social::posts::{self, NewPost, PostView},
+    social::{
+        posts::{self, NewPost, PostView},
+        taste,
+    },
     stats::{Period, repo as stats},
 };
 
 const STATS_SHARE_SIZE: usize = 5;
+const TASTE_POOL: i64 = 500;
 
 pub fn routes() -> Router<AppState> {
     Router::new()
@@ -131,8 +133,9 @@ async fn feed(
     State(state): State<AppState>,
     current: CurrentUser,
 ) -> AppResult<Json<Vec<PostView>>> {
+    let similar = taste::similarities(&state.db, current.user.id, TASTE_POOL).await?;
     Ok(Json(
-        posts::feed(&state.db, current.user.id, &HashMap::new()).await?,
+        posts::feed(&state.db, current.user.id, &similar).await?,
     ))
 }
 
