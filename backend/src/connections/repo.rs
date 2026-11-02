@@ -106,6 +106,12 @@ pub async fn mark_synced(
     Ok(())
 }
 
+pub async fn all(db: &PgPool) -> AppResult<Vec<Connection>> {
+    Ok(sqlx::query_as::<_, Connection>("select * from connections")
+        .fetch_all(db)
+        .await?)
+}
+
 pub async fn due(db: &PgPool, limit: i64) -> AppResult<Vec<Connection>> {
     Ok(sqlx::query_as::<_, Connection>(
         "select * from connections

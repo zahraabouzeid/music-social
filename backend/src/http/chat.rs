@@ -15,6 +15,7 @@ use crate::{
     app::AppState,
     chat::{Conversation, Message, NewMessage, repo},
     error::{AppError, AppResult},
+    listening::now_playing::{self, Listening},
     stats::{self, Period},
 };
 
@@ -29,6 +30,7 @@ pub fn routes() -> Router<AppState> {
         .route("/conversations/{id}/members", post(add_member))
         .route("/conversations/{id}/messages", get(messages).post(send))
         .route("/conversations/{id}/read", post(mark_read))
+        .route("/conversations/{id}/now-playing", get(now_playing))
 }
 
 async fn list(
@@ -192,6 +194,16 @@ async fn mark_read(
     repo::ensure_member(&state.db, id, current.user.id).await?;
     repo::mark_read(&state.db, id, current.user.id).await?;
     Ok(StatusCode::NO_CONTENT)
+}
+
+async fn now_playing(
+    State(state): State<AppState>,
+    current: CurrentUser,
+    Path(id): Path<Uuid>,
+) -> AppResult<Json<Vec<Listening>>> {
+    repo::ensure_member(&state.db, id, current.user.id).await?;
+    let members = repo::member_ids(&state.db, id).await?;
+    Ok(Json(now_playing::for_users(&state.db, &members).await?))
 }
 
 fn body_text(raw: &str) -> AppResult<String> {

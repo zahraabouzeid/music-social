@@ -2,7 +2,10 @@ use chrono::{DateTime, Utc};
 use serde::Deserialize;
 
 use super::SourceError;
-use crate::{config::LastfmConfig, listening::Play};
+use crate::{
+    config::LastfmConfig,
+    listening::{NowPlaying, Play},
+};
 
 const PAGE_SIZE: u32 = 200;
 const MAX_PAGES: u32 = 50;
@@ -38,6 +41,13 @@ struct Track {
     artist: Text,
     album: Option<Text>,
     date: Option<Date>,
+    #[serde(rename = "@attr")]
+    attr: Option<TrackAttr>,
+}
+
+#[derive(Deserialize)]
+struct TrackAttr {
+    nowplaying: Option<String>,
 }
 
 #[derive(Deserialize)]
@@ -73,6 +83,44 @@ impl LastfmClient {
             404 => Ok(false),
             status => Err(SourceError::Status(status)),
         }
+    }
+
+    pub async fn now_playing(&self, username: &str) -> Result<Option<NowPlaying>, SourceError> {
+        let response = self
+            .http
+            .get(&self.config.api_url)
+            .query(&[
+                ("method", "user.getrecenttracks"),
+                ("user", username),
+                ("api_key", &self.config.api_key),
+                ("format", "json"),
+                ("limit", "1"),
+            ])
+            .send()
+            .await?;
+        if !response.status().is_success() {
+            return Err(SourceError::Status(response.status().as_u16()));
+        }
+        let body: RecentTracksResponse = response.json().await?;
+        Ok(body
+            .recenttracks
+            .track
+            .into_iter()
+            .find(|track| {
+                track
+                    .attr
+                    .as_ref()
+                    .and_then(|attr| attr.nowplaying.as_deref())
+                    == Some("true")
+            })
+            .map(|track| NowPlaying {
+                title: track.name,
+                artist: track.artist.text,
+                album: track
+                    .album
+                    .map(|album| album.text)
+                    .filter(|album| !album.is_empty()),
+            }))
     }
 
     pub async fn plays_since(

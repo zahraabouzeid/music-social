@@ -2,9 +2,12 @@ use chrono::{DateTime, Duration, Utc};
 use serde::Deserialize;
 
 use super::SourceError;
-use crate::{config::SpotifyConfig, listening::Play};
+use crate::{
+    config::SpotifyConfig,
+    listening::{NowPlaying, Play},
+};
 
-const SCOPE: &str = "user-read-recently-played";
+const SCOPE: &str = "user-read-recently-played user-read-currently-playing";
 
 #[derive(Clone)]
 pub struct SpotifyClient {
@@ -49,6 +52,12 @@ struct SpotifyTrack {
 #[derive(Deserialize)]
 struct Named {
     name: String,
+}
+
+#[derive(Deserialize)]
+struct CurrentlyPlaying {
+    is_playing: bool,
+    item: Option<SpotifyTrack>,
 }
 
 #[derive(Deserialize)]
@@ -132,6 +141,34 @@ impl SpotifyClient {
             return Err(SourceError::Status(response.status().as_u16()));
         }
         Ok(response.json::<Profile>().await?.id)
+    }
+
+    pub async fn now_playing(&self, access_token: &str) -> Result<Option<NowPlaying>, SourceError> {
+        let response = self
+            .http
+            .get(format!(
+                "{}/me/player/currently-playing",
+                self.config.api_url
+            ))
+            .bearer_auth(access_token)
+            .send()
+            .await?;
+        match response.status().as_u16() {
+            204 => return Ok(None),
+            200 => {}
+            status => return Err(SourceError::Status(status)),
+        }
+        let body: CurrentlyPlaying = response.json().await?;
+        if !body.is_playing {
+            return Ok(None);
+        }
+        Ok(body.item.and_then(|track| {
+            Some(NowPlaying {
+                artist: track.artists.into_iter().next()?.name,
+                title: track.name,
+                album: Some(track.album.name),
+            })
+        }))
     }
 
     pub async fn plays_since(
