@@ -1,5 +1,7 @@
 import { Link } from 'expo-router';
-import { Pressable, StyleSheet, View } from 'react-native';
+import * as Haptics from 'expo-haptics';
+import { useRef } from 'react';
+import { Animated, Platform, Pressable, StyleSheet, View } from 'react-native';
 
 import { useDeletePost, useLike } from '@/api/hooks';
 import type { Post } from '@/api/types';
@@ -11,6 +13,16 @@ export function PostCard({ post, canDelete = false }: { post: Post; canDelete?: 
   const like = useLike();
   const remove = useDeletePost();
   const liked = post.liked_by_me;
+  const pop = useRef(new Animated.Value(1)).current;
+
+  const toggleLike = () => {
+    if (!liked) {
+      pop.setValue(0.7);
+      Animated.spring(pop, { toValue: 1, friction: 3, tension: 180, useNativeDriver: Platform.OS !== 'web' }).start();
+      if (Platform.OS !== 'web') Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    }
+    like.mutate({ id: post.id, like: !liked });
+  };
 
   return (
     <View style={styles.post}>
@@ -37,11 +49,13 @@ export function PostCard({ post, canDelete = false }: { post: Post; canDelete?: 
           accessibilityRole="button"
           accessibilityLabel={liked ? 'Remove like' : 'Like'}
           accessibilityState={{ selected: liked }}
-          onPress={() => like.mutate({ id: post.id, like: !liked })}
+          onPress={toggleLike}
           hitSlop={8}
           style={styles.like}
         >
-          <Icon name="heart" size={22} filled={liked} color={liked ? colors.accent : colors.muted} />
+          <Animated.View style={{ transform: [{ scale: pop }] }}>
+            <Icon name="heart" size={22} filled={liked} color={liked ? colors.accent : colors.muted} />
+          </Animated.View>
           {post.likes > 0 ? (
             <Text variant="small" color={liked ? colors.text : colors.muted}>
               {count(post.likes)}
