@@ -3,7 +3,7 @@ import { Pressable, StyleSheet, View } from 'react-native';
 
 import { useDeletePost, useLike } from '@/api/hooks';
 import type { Post } from '@/api/types';
-import { Avatar, Card, Icon, Text, colors, radius, space } from '@/ui';
+import { Avatar, Cover, Icon, LogoMark, Text, colors, radius, space } from '@/ui';
 
 import { ago, count, hours, periodPhrase } from '../format';
 
@@ -13,24 +13,22 @@ export function PostCard({ post, canDelete = false }: { post: Post; canDelete?: 
   const liked = post.liked_by_me;
 
   return (
-    <Card>
-      <View style={styles.header}>
-        <Link href={`/u/${post.author.username}`} asChild>
-          <Pressable accessibilityRole="link" style={styles.author}>
-            <Avatar name={post.author.display_name} seed={post.author.username} size={36} />
-            <View style={{ flex: 1 }}>
-              <Text variant="bodyStrong" numberOfLines={1}>
-                {post.author.display_name}
-              </Text>
-              <Text variant="small" color={colors.muted}>
-                @{post.author.username}, {ago(post.created_at)}
-              </Text>
-            </View>
-          </Pressable>
-        </Link>
-      </View>
+    <View style={styles.post}>
+      <Link href={`/u/${post.author.username}`} asChild>
+        <Pressable accessibilityRole="link" style={styles.author}>
+          <Avatar name={post.author.display_name} seed={post.author.username} size={36} />
+          <View style={{ flex: 1 }}>
+            <Text variant="bodyStrong" numberOfLines={1}>
+              {post.author.display_name}
+            </Text>
+            <Text variant="small" color={colors.muted}>
+              {ago(post.created_at)}
+            </Text>
+          </View>
+        </Pressable>
+      </Link>
 
-      {post.caption ? <Text>{post.caption}</Text> : null}
+      {post.caption ? <Text variant={post.kind === 'text' ? 'lead' : 'body'}>{post.caption}</Text> : null}
       {post.kind === 'track' && post.track ? <TrackBlock track={post.track} /> : null}
       {post.kind === 'stats' && post.payload ? <StatsBlock payload={post.payload} /> : null}
 
@@ -40,9 +38,10 @@ export function PostCard({ post, canDelete = false }: { post: Post; canDelete?: 
           accessibilityLabel={liked ? 'Remove like' : 'Like'}
           accessibilityState={{ selected: liked }}
           onPress={() => like.mutate({ id: post.id, like: !liked })}
-          style={styles.likeButton}
+          hitSlop={8}
+          style={styles.like}
         >
-          <Icon name="heart" size={20} filled={liked} color={liked ? colors.accent : colors.muted} />
+          <Icon name="heart" size={22} filled={liked} color={liked ? colors.accent : colors.muted} />
           {post.likes > 0 ? (
             <Text variant="small" color={liked ? colors.text : colors.muted}>
               {count(post.likes)}
@@ -50,23 +49,23 @@ export function PostCard({ post, canDelete = false }: { post: Post; canDelete?: 
           ) : null}
         </Pressable>
         {canDelete ? (
-          <Pressable accessibilityRole="button" onPress={() => remove.mutate(post.id)} style={styles.quietButton}>
-            <Text variant="small" color={colors.muted}>
+          <Pressable accessibilityRole="button" onPress={() => remove.mutate(post.id)} hitSlop={8}>
+            <Text variant="small" color={colors.faint}>
               Delete
             </Text>
           </Pressable>
         ) : null}
       </View>
-    </Card>
+    </View>
   );
 }
 
 function TrackBlock({ track }: { track: NonNullable<Post['track']> }) {
   return (
     <View style={styles.track}>
-      <View style={styles.disc} />
-      <View style={{ flex: 1 }}>
-        <Text variant="heading" color={colors.text} numberOfLines={2}>
+      <Cover seed={`${track.artist}|${track.title}`} aspectRatio={1.6} />
+      <View>
+        <Text variant="title" numberOfLines={2}>
           {track.title}
         </Text>
         <Text color={colors.muted} numberOfLines={1}>
@@ -79,47 +78,59 @@ function TrackBlock({ track }: { track: NonNullable<Post['track']> }) {
 }
 
 function StatsBlock({ payload }: { payload: NonNullable<Post['payload']> }) {
+  const [first, ...rest] = payload.top_artists;
   return (
-    <View style={styles.stats}>
-      <Text variant="small" color={colors.muted}>
-        Top artists of {periodPhrase(payload.period)}, {hours(payload.totals.minutes)} listened
-      </Text>
-      {payload.top_artists.map((artist, index) => (
-        <View key={artist.name} style={styles.statRow}>
-          <Text variant="heading" color={index === 0 ? colors.accent : colors.muted} style={{ width: 22 }}>
-            {index + 1}
-          </Text>
-          <Text variant={index === 0 ? 'title' : 'bodyStrong'} style={{ flex: 1 }} numberOfLines={1}>
-            {artist.name}
-          </Text>
-        </View>
-      ))}
+    <View style={styles.poster}>
+      <View style={styles.posterTop}>
+        <Text variant="small" color={colors.muted}>
+          Top artists of {periodPhrase(payload.period)}
+        </Text>
+        <LogoMark size={22} />
+      </View>
+      {first ? (
+        <Text variant="hero" numberOfLines={2}>
+          {first.name}
+        </Text>
+      ) : null}
+      <View style={styles.posterList}>
+        {rest.map((artist, index) => (
+          <View key={artist.name} style={styles.posterRow}>
+            <Text variant="bodyStrong" color={colors.faint} style={styles.posterRank}>
+              {index + 2}
+            </Text>
+            <Text variant="bodyStrong" numberOfLines={1} style={{ flex: 1 }}>
+              {artist.name}
+            </Text>
+          </View>
+        ))}
+      </View>
+      <View style={styles.posterFooter}>
+        <Text variant="number" color={colors.highlight}>
+          {hours(payload.totals.minutes)}
+        </Text>
+        <Text variant="small" color={colors.muted}>
+          listened, {count(payload.totals.plays)} plays
+        </Text>
+      </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  header: { flexDirection: 'row', alignItems: 'center' },
-  author: { flexDirection: 'row', alignItems: 'center', gap: space.md, flex: 1 },
-  track: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: space.lg,
+  post: { gap: space.md, paddingVertical: space.lg },
+  author: { flexDirection: 'row', alignItems: 'center', gap: space.md },
+  track: { gap: space.md },
+  poster: {
     backgroundColor: colors.raised,
     borderRadius: radius.md,
-    padding: space.lg,
+    padding: space.xl,
+    gap: space.md,
   },
-  disc: {
-    width: 56,
-    height: 56,
-    borderRadius: 28,
-    backgroundColor: colors.bg,
-    borderWidth: 18,
-    borderColor: colors.accent,
-  },
-  stats: { gap: space.sm, paddingVertical: space.xs },
-  statRow: { flexDirection: 'row', alignItems: 'baseline', gap: space.sm },
-  actions: { flexDirection: 'row', alignItems: 'center', gap: space.lg },
-  likeButton: { flexDirection: 'row', alignItems: 'center', gap: space.xs, paddingVertical: space.xs },
-  quietButton: { paddingHorizontal: space.md, paddingVertical: space.xs + 2 },
+  posterTop: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
+  posterList: { gap: space.xs },
+  posterRow: { flexDirection: 'row', alignItems: 'baseline', gap: space.md },
+  posterRank: { width: 16 },
+  posterFooter: { flexDirection: 'row', alignItems: 'baseline', gap: space.sm, paddingTop: space.sm },
+  actions: { flexDirection: 'row', alignItems: 'center', gap: space.xl },
+  like: { flexDirection: 'row', alignItems: 'center', gap: space.xs },
 });

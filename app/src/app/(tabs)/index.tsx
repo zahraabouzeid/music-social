@@ -3,7 +3,7 @@ import { ActivityIndicator, StyleSheet, View } from 'react-native';
 
 import { useFeed } from '@/api/hooks';
 import { useSession } from '@/auth/session';
-import { PostCard } from '@/features/posts/PostCard';
+import { PostList } from '@/features/posts/PostList';
 import { Button, Notice, Screen, Wordmark, colors, space } from '@/ui';
 
 export default function Feed() {
@@ -33,9 +33,7 @@ export default function Feed() {
           }
         />
       ) : null}
-      {feed.data?.map((post) => (
-        <PostCard key={post.id} post={post} canDelete={post.author.username === user?.username} />
-      ))}
+      {feed.data ? <PostList posts={feed.data} canDelete={(post) => post.author.username === user?.username} /> : null}
     </Screen>
   );
 }
