@@ -3,7 +3,7 @@ import { StyleSheet, View } from 'react-native';
 import { Text } from './Text';
 import { colors, fonts } from './theme';
 
-const swatches = [colors.red, colors.ink, '#7A4FD6', '#1F7A6B', '#C2410C', '#3A5BD9'];
+const swatches = [colors.red, '#7A4FD6', '#1F7A6B', '#C2410C', '#3A5BD9'];
 
 function swatchFor(seed: string) {
   let hash = 0;

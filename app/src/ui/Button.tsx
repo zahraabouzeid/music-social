@@ -3,7 +3,7 @@ import { ActivityIndicator, Pressable, StyleSheet } from 'react-native';
 import { Text } from './Text';
 import { colors, radius, space } from './theme';
 
-type Tone = 'primary' | 'quiet' | 'ink';
+type Tone = 'primary' | 'quiet' | 'ink' | 'onInk';
 
 type Props = {
   label: string;
@@ -18,6 +18,7 @@ const tones: Record<Tone, { background: string; text: string; border: string }> 
   primary: { background: colors.red, text: colors.onInk, border: colors.red },
   ink: { background: colors.ink, text: colors.onInk, border: colors.ink },
   quiet: { background: 'transparent', text: colors.ink, border: colors.line },
+  onInk: { background: 'transparent', text: colors.onInk, border: colors.onInkMuted },
 };
 
 export function Button({ label, onPress, tone = 'primary', busy = false, disabled = false, compact = false }: Props) {
