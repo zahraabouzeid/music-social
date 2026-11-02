@@ -1,6 +1,6 @@
 use axum::{
     Json, Router,
-    extract::{Path, State},
+    extract::State,
     http::StatusCode,
     routing::{get, post},
 };
@@ -8,7 +8,7 @@ use serde::{Deserialize, Serialize};
 
 use super::auth::CurrentUser;
 use crate::{
-    accounts::{PrivateUser, PublicUser, password, repo, validate},
+    accounts::{PrivateUser, password, repo, validate},
     app::AppState,
     error::{AppError, AppResult},
 };
@@ -19,7 +19,6 @@ pub fn routes() -> Router<AppState> {
         .route("/auth/login", post(login))
         .route("/auth/logout", post(logout))
         .route("/me", get(me).patch(update_me))
-        .route("/users/{username}", get(profile))
 }
 
 #[derive(Deserialize)]
@@ -114,13 +113,5 @@ async fn update_me(
         bio.as_deref(),
     )
     .await?;
-    Ok(Json((&user).into()))
-}
-
-async fn profile(
-    State(state): State<AppState>,
-    Path(username): Path<String>,
-) -> AppResult<Json<PublicUser>> {
-    let user = repo::find_by_username(&state.db, &username).await?;
     Ok(Json((&user).into()))
 }

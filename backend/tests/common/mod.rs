@@ -76,6 +76,10 @@ impl TestApp {
         self.request(Method::GET, path, token, None).await
     }
 
+    pub async fn put(&self, path: &str, token: &str) -> Reply {
+        self.request(Method::PUT, path, Some(token), None).await
+    }
+
     pub async fn post(&self, path: &str, token: Option<&str>, body: Value) -> Reply {
         self.request(Method::POST, path, token, Some(body)).await
     }

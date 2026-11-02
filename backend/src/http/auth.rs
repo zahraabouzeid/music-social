@@ -31,3 +31,25 @@ impl FromRequestParts<AppState> for CurrentUser {
         Ok(Self { user, token })
     }
 }
+
+pub struct MaybeUser(pub Option<CurrentUser>);
+
+impl FromRequestParts<AppState> for MaybeUser {
+    type Rejection = AppError;
+
+    async fn from_request_parts(
+        parts: &mut Parts,
+        state: &AppState,
+    ) -> Result<Self, Self::Rejection> {
+        if parts
+            .headers
+            .contains_key(axum::http::header::AUTHORIZATION)
+        {
+            CurrentUser::from_request_parts(parts, state)
+                .await
+                .map(|user| Self(Some(user)))
+        } else {
+            Ok(Self(None))
+        }
+    }
+}
