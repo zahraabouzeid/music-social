@@ -1,4 +1,6 @@
-import { ActivityIndicator, Pressable, StyleSheet } from 'react-native';
+import { ActivityIndicator, Pressable, StyleSheet, View } from 'react-native';
+
+import { Icon, IconName } from './Icon';
 
 import { Text } from './Text';
 import { colors, radius, space } from './theme';
@@ -12,6 +14,7 @@ type Props = {
   busy?: boolean;
   disabled?: boolean;
   compact?: boolean;
+  icon?: IconName;
 };
 
 const tones: Record<Tone, { background: string; text: string; border: string }> = {
@@ -20,7 +23,15 @@ const tones: Record<Tone, { background: string; text: string; border: string }> 
   quiet: { background: 'transparent', text: colors.text, border: colors.line },
 };
 
-export function Button({ label, onPress, tone = 'primary', busy = false, disabled = false, compact = false }: Props) {
+export function Button({
+  label,
+  onPress,
+  tone = 'primary',
+  busy = false,
+  disabled = false,
+  compact = false,
+  icon,
+}: Props) {
   const palette = tones[tone];
   const inactive = disabled || busy;
   return (
@@ -40,9 +51,12 @@ export function Button({ label, onPress, tone = 'primary', busy = false, disable
       {busy ? (
         <ActivityIndicator color={palette.text} />
       ) : (
-        <Text variant="bodyStrong" color={palette.text}>
-          {label}
-        </Text>
+        <View style={styles.content}>
+          {icon ? <Icon name={icon} size={compact ? 18 : 20} color={palette.text} /> : null}
+          <Text variant="bodyStrong" color={palette.text}>
+            {label}
+          </Text>
+        </View>
       )}
     </Pressable>
   );
@@ -58,6 +72,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   compact: { minHeight: 36, paddingHorizontal: space.lg },
+  content: { flexDirection: 'row', alignItems: 'center', gap: space.sm },
   pressed: { transform: [{ scale: 0.98 }], opacity: 0.9 },
   inactive: { opacity: 0.5 },
 });

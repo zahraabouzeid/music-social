@@ -3,7 +3,7 @@ import { Pressable, StyleSheet, View } from 'react-native';
 
 import { useDeletePost, useLike } from '@/api/hooks';
 import type { Post } from '@/api/types';
-import { Avatar, Card, Text, colors, radius, space } from '@/ui';
+import { Avatar, Card, Icon, Text, colors, radius, space } from '@/ui';
 
 import { ago, count, hours, periodPhrase } from '../format';
 
@@ -40,12 +40,14 @@ export function PostCard({ post, canDelete = false }: { post: Post; canDelete?: 
           accessibilityLabel={liked ? 'Remove like' : 'Like'}
           accessibilityState={{ selected: liked }}
           onPress={() => like.mutate({ id: post.id, like: !liked })}
-          style={[styles.likeButton, liked && styles.liked]}
+          style={styles.likeButton}
         >
-          <Text variant="small" color={liked ? colors.onAccent : colors.text}>
-            {liked ? 'Liked' : 'Like'}
-            {post.likes > 0 ? `  ${count(post.likes)}` : ''}
-          </Text>
+          <Icon name="heart" size={20} filled={liked} color={liked ? colors.accent : colors.muted} />
+          {post.likes > 0 ? (
+            <Text variant="small" color={liked ? colors.text : colors.muted}>
+              {count(post.likes)}
+            </Text>
+          ) : null}
         </Pressable>
         {canDelete ? (
           <Pressable accessibilityRole="button" onPress={() => remove.mutate(post.id)} style={styles.quietButton}>
@@ -117,14 +119,7 @@ const styles = StyleSheet.create({
   },
   stats: { gap: space.sm, paddingVertical: space.xs },
   statRow: { flexDirection: 'row', alignItems: 'baseline', gap: space.sm },
-  actions: { flexDirection: 'row', gap: space.sm },
-  likeButton: {
-    borderRadius: radius.pill,
-    borderWidth: 1.5,
-    borderColor: colors.line,
-    paddingHorizontal: space.lg,
-    paddingVertical: space.xs + 2,
-  },
-  liked: { backgroundColor: colors.accent, borderColor: colors.accent },
+  actions: { flexDirection: 'row', alignItems: 'center', gap: space.lg },
+  likeButton: { flexDirection: 'row', alignItems: 'center', gap: space.xs, paddingVertical: space.xs },
   quietButton: { paddingHorizontal: space.md, paddingVertical: space.xs + 2 },
 });

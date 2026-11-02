@@ -60,7 +60,7 @@ export default function Connections() {
           Request your data from Spotify (Extended streaming history) or Apple (privacy.apple.com), then pick the JSON
           or CSV files here. Plays you already have are skipped.
         </Text>
-        <Button label="Choose files" tone="secondary" busy={upload.busy} onPress={startImport} />
+        <Button label="Choose files" icon="upload" tone="secondary" busy={upload.busy} onPress={startImport} />
         {upload.error ? <Text color={colors.accent}>{upload.error}</Text> : null}
         {results.map((result, index) => (
           <Text key={`${result.name}-${index}`} variant="small" color={result.error ? colors.accent : colors.text}>
