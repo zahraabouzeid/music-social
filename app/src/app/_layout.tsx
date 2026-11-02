@@ -59,7 +59,10 @@ function Navigation() {
     >
       <Stack.Protected guard={signedIn}>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="u/[username]" options={{ title: '' }} />
+        <Stack.Screen
+          name="u/[username]"
+          options={{ title: '', headerTransparent: true, headerStyle: { backgroundColor: 'transparent' } }}
+        />
         <Stack.Screen name="settings" options={{ title: 'Settings' }} />
         <Stack.Screen name="connections" options={{ title: 'Music sources' }} />
         <Stack.Screen name="compose" options={{ title: 'Share', presentation: 'modal' }} />

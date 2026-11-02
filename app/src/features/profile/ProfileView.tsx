@@ -7,7 +7,7 @@ import { PostList } from '../posts/PostList';
 import { StatsPanel } from '../stats/StatsPanel';
 import { ProfileHeader } from './ProfileHeader';
 
-export function ProfileView({ username, insetTop = true }: { username: string; insetTop?: boolean }) {
+export function ProfileView({ username, underHeader = false }: { username: string; underHeader?: boolean }) {
   const profile = useProfile(username);
   const posts = useUserPosts(username);
 
@@ -17,12 +17,12 @@ export function ProfileView({ username, insetTop = true }: { username: string; i
   };
 
   return (
-    <Screen refreshing={profile.isRefetching} onRefresh={refresh} insetTop={insetTop}>
+    <Screen refreshing={profile.isRefetching} onRefresh={refresh}>
       {profile.isLoading ? <ActivityIndicator color={colors.accent} /> : null}
       {profile.error ? <Notice tone="error" title="This profile could not load" body={profile.error.message} /> : null}
       {profile.data ? (
         <>
-          <ProfileHeader profile={profile.data} />
+          <ProfileHeader profile={profile.data} underHeader={underHeader} />
           <StatsPanel username={username} isSelf={profile.data.is_self} />
           <View style={styles.posts}>
             <Text variant="heading">Posts</Text>

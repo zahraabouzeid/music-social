@@ -5,7 +5,7 @@ import { colors, fonts } from './theme';
 
 const swatches = [colors.accent, '#AF52DE', '#5856D6', '#0A84FF', '#E8590C', '#30A46C'];
 
-function swatchFor(seed: string) {
+export function swatchFor(seed: string) {
   let hash = 0;
   for (const char of seed) hash = (hash * 31 + char.charCodeAt(0)) >>> 0;
   return swatches[hash % swatches.length];

@@ -1,4 +1,4 @@
-export { Avatar } from './Avatar';
+export { Avatar, swatchFor } from './Avatar';
 export { Bars } from './Bars';
 export { Button } from './Button';
 export { Card } from './Card';
