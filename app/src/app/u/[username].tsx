@@ -6,8 +6,8 @@ export default function UserProfile() {
   const { username } = useLocalSearchParams<{ username: string }>();
   return (
     <>
-      <Stack.Screen options={{ title: `@${username}` }} />
-      <ProfileView username={username} insetTop={false} />
+      <Stack.Screen options={{ title: '' }} />
+      <ProfileView username={username} underHeader />
     </>
   );
 }

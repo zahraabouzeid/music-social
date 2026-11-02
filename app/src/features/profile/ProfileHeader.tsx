@@ -3,11 +3,13 @@ import { StyleSheet, View } from 'react-native';
 
 import { useFollow, useMatch, useStats } from '@/api/hooks';
 import type { Profile } from '@/api/types';
-import { Avatar, Bars, Button, Text, colors, radius, space } from '@/ui';
+import Svg, { Defs, LinearGradient, Rect, Stop } from 'react-native-svg';
+
+import { Avatar, Bars, Button, Text, colors, radius, space, swatchFor } from '@/ui';
 
 import { count, dailySeries, listing, percent, plural } from '../format';
 
-export function ProfileHeader({ profile }: { profile: Profile }) {
+export function ProfileHeader({ profile, underHeader = false }: { profile: Profile; underHeader?: boolean }) {
   const follow = useFollow(profile.username);
   const month = useStats(profile.username, 'month');
   const match = useMatch(profile.username, !profile.is_self);
@@ -16,19 +18,23 @@ export function ProfileHeader({ profile }: { profile: Profile }) {
 
   return (
     <View style={styles.wrap}>
-      <View style={styles.identity}>
-        <Avatar name={profile.display_name} seed={profile.username} size={72} />
-        <View style={{ flex: 1 }}>
-          <Text variant="title" numberOfLines={2}>
+      <View style={[styles.hero, underHeader && styles.heroUnderHeader]}>
+        <Svg style={StyleSheet.absoluteFill} width="100%" height="100%" preserveAspectRatio="none">
+          <Defs>
+            <LinearGradient id="profile-glow" x1="0" y1="0" x2="0" y2="1">
+              <Stop offset="0" stopColor={swatchFor(profile.username)} stopOpacity={0.75} />
+              <Stop offset="1" stopColor={colors.bg} stopOpacity={1} />
+            </LinearGradient>
+          </Defs>
+          <Rect x="0" y="0" width="100%" height="100%" fill="url(#profile-glow)" />
+        </Svg>
+        <Avatar name={profile.display_name} seed={profile.username} size={104} />
+        <View style={styles.names}>
+          <Text variant="hero" numberOfLines={2}>
             {profile.display_name}
           </Text>
           <Text color={colors.muted}>@{profile.username}</Text>
         </View>
-        {profile.is_self ? (
-          <Link href="/settings" asChild>
-            <Button label="Edit" icon="settings" tone="quiet" compact onPress={() => undefined} />
-          </Link>
-        ) : null}
       </View>
 
       {profile.bio ? <Text>{profile.bio}</Text> : null}
@@ -39,14 +45,21 @@ export function ProfileHeader({ profile }: { profile: Profile }) {
         <Count value={profile.counts.following} label="following" />
       </View>
 
-      {!profile.is_self ? (
-        <Button
-          label={profile.is_following ? 'Following' : 'Follow'}
-          tone={profile.is_following ? 'quiet' : 'primary'}
-          busy={follow.isPending}
-          onPress={() => follow.mutate(!profile.is_following)}
-        />
-      ) : null}
+      <View style={styles.actions}>
+        {profile.is_self ? (
+          <Link href="/settings" asChild>
+            <Button label="Edit profile" icon="settings" tone="quiet" compact onPress={() => undefined} />
+          </Link>
+        ) : (
+          <Button
+            label={profile.is_following ? 'Following' : 'Follow'}
+            tone={profile.is_following ? 'quiet' : 'primary'}
+            compact
+            busy={follow.isPending}
+            onPress={() => follow.mutate(!profile.is_following)}
+          />
+        )}
+      </View>
 
       {!profile.is_self && match.data && match.data.similarity > 0 ? (
         <View style={styles.match}>
@@ -84,7 +97,17 @@ function Count({ value, label }: { value: number; label: string }) {
 
 const styles = StyleSheet.create({
   wrap: { gap: space.lg },
-  identity: { flexDirection: 'row', alignItems: 'center', gap: space.lg },
+  hero: {
+    marginHorizontal: -space.lg,
+    marginTop: -space.lg,
+    paddingHorizontal: space.lg,
+    paddingTop: space.xxl,
+    paddingBottom: space.sm,
+    gap: space.lg,
+  },
+  heroUnderHeader: { paddingTop: 72 },
+  names: { gap: space.xs },
+  actions: { flexDirection: 'row', gap: space.sm },
   counts: { flexDirection: 'row', flexWrap: 'wrap', columnGap: space.xl, rowGap: space.xs },
   match: {
     flexDirection: 'row',
