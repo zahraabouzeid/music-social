@@ -18,7 +18,14 @@ export function count(value: number) {
 }
 
 export function hours(minutes: number) {
-  return minutes < 120 ? `${minutes} min` : `${count(Math.round(minutes / 60))} h`;
+  if (minutes < 60) return `${minutes} min`;
+  if (minutes < 600) return `${(minutes / 60).toFixed(1)} h`;
+  return `${count(Math.round(minutes / 60))} h`;
+}
+
+export function listing(items: string[]) {
+  if (items.length <= 1) return items.join('');
+  return `${items.slice(0, -1).join(', ')} and ${items[items.length - 1]}`;
 }
 
 export function ago(iso: string) {
