@@ -98,13 +98,29 @@ export function useCreatePost() {
 export function useLike() {
   const token = useToken();
   const queryClient = useQueryClient();
+  const postLists = {
+    predicate: (query: { queryKey: readonly unknown[] }) => ['feed', 'posts'].includes(String(query.queryKey[0])),
+  };
+
   return useMutation({
     mutationFn: ({ id, like }: { id: string; like: boolean }) =>
       request(`/posts/${id}/like`, { method: like ? 'PUT' : 'DELETE', token }),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['feed'] });
-      queryClient.invalidateQueries({ queryKey: ['posts'] });
+    onMutate: async ({ id, like }) => {
+      await queryClient.cancelQueries(postLists);
+      const snapshot = queryClient.getQueriesData<Post[]>(postLists);
+      queryClient.setQueriesData<Post[]>(postLists, (posts) =>
+        posts?.map((post) =>
+          post.id === id && post.liked_by_me !== like
+            ? { ...post, liked_by_me: like, likes: post.likes + (like ? 1 : -1) }
+            : post,
+        ),
+      );
+      return { snapshot };
     },
+    onError: (_error, _variables, context) => {
+      context?.snapshot.forEach(([key, data]) => queryClient.setQueryData(key, data));
+    },
+    onSettled: () => queryClient.invalidateQueries(postLists),
   });
 }
 
